@@ -3,15 +3,41 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
+    setLoading(true);
+
+    if (isSignUp) {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: window.location.origin },
+      });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Conta criada! Verifique seu e-mail para confirmar.");
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        navigate("/dashboard");
+      }
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -22,7 +48,7 @@ const Login = () => {
           <p className="text-muted-foreground text-sm">Gerencie suas finanças com inteligência</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="email">E-mail</Label>
             <Input
@@ -32,6 +58,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="rounded-xl bg-secondary border-border"
+              required
             />
           </div>
           <div className="space-y-2">
@@ -43,12 +70,25 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="rounded-xl bg-secondary border-border"
+              required
+              minLength={6}
             />
           </div>
-          <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold">
-            Entrar
+          <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
+            {loading ? "Carregando..." : isSignUp ? "Criar Conta" : "Entrar"}
           </Button>
         </form>
+
+        <p className="text-center text-sm text-muted-foreground">
+          {isSignUp ? "Já tem conta?" : "Não tem conta?"}{" "}
+          <button
+            type="button"
+            onClick={() => setIsSignUp(!isSignUp)}
+            className="text-primary font-medium hover:underline"
+          >
+            {isSignUp ? "Entrar" : "Criar conta"}
+          </button>
+        </p>
       </div>
     </div>
   );
