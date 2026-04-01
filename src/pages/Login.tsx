@@ -53,6 +53,20 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {isSignUp && (
+            <div className="space-y-2">
+              <Label htmlFor="fullName">Nome</Label>
+              <Input
+                id="fullName"
+                type="text"
+                placeholder="Seu nome completo"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="rounded-xl bg-secondary border-border"
+                required
+              />
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="email">E-mail</Label>
             <Input

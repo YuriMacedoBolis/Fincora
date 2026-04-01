@@ -63,7 +63,7 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const fullName = user?.user_metadata?.full_name || "Usuário";
+  const fullName = profile?.full_name || "Usuário";
 
   return (
     <div className="min-h-screen pb-24">
