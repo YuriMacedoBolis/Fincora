@@ -35,7 +35,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => (
                   <p className="text-xs text-muted-foreground">{date}</p>
                 </div>
               </div>
-              <span className={`text-sm font-semibold ${isIncome ? "text-success" : "text-warning"}`}>
+              <span className={`text-sm font-semibold ${isIncome ? "text-emerald-500" : "text-orange-500"}`}>
                 {isIncome ? "+" : "-"}{formatBRL(Math.abs(t.amount))}
               </span>
             </div>
