@@ -9,6 +9,7 @@ import { toast } from "sonner";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const Login = () => {
     setLoading(true);
 
     if (isSignUp) {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: window.location.origin },
@@ -26,6 +27,9 @@ const Login = () => {
       if (error) {
         toast.error(error.message);
       } else {
+        if (data.user) {
+          await supabase.from("profiles").update({ full_name: fullName }).eq("id", data.user.id);
+        }
         toast.success("Conta criada! Verifique seu e-mail para confirmar.");
       }
     } else {
@@ -49,6 +53,20 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {isSignUp && (
+            <div className="space-y-2">
+              <Label htmlFor="fullName">Nome</Label>
+              <Input
+                id="fullName"
+                type="text"
+                placeholder="Seu nome completo"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="rounded-xl bg-secondary border-border"
+                required
+              />
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="email">E-mail</Label>
             <Input

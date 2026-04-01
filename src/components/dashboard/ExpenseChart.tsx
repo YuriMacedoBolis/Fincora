@@ -9,7 +9,7 @@ interface ExpenseChartProps {
 
 const ExpenseChart = ({ transactions }: ExpenseChartProps) => {
   const expensesByCategory = transactions
-    .filter((t) => t.type === "expense")
+    .filter((t) => t.type === "saida")
     .reduce<Record<string, number>>((acc, t) => {
       const cat = t.category || "Outros";
       acc[cat] = (acc[cat] || 0) + Math.abs(t.amount);

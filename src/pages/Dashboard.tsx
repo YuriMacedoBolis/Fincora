@@ -21,6 +21,20 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
 
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user!.id)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ["transactions", user?.id],
     queryFn: async () => {
@@ -35,11 +49,11 @@ const Dashboard = () => {
   });
 
   const income = transactions
-    .filter((t) => t.type === "income")
+    .filter((t) => t.type === "entrada")
     .reduce((sum, t) => sum + Number(t.amount), 0);
 
   const expenses = transactions
-    .filter((t) => t.type === "expense")
+    .filter((t) => t.type === "saida")
     .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
 
   const balance = income - expenses;
@@ -49,7 +63,7 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const fullName = user?.user_metadata?.full_name || "Usuário";
+  const fullName = profile?.full_name || "Usuário";
 
   return (
     <div className="min-h-screen pb-24">
