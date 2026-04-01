@@ -16,7 +16,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => (
     ) : (
       <div className="space-y-3">
         {transactions.map((t) => {
-          const isIncome = t.type === "income";
+          const isIncome = t.type === "entrada";
           const date = t.created_at
             ? new Date(t.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })
             : "";
