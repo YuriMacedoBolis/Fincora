@@ -23,11 +23,11 @@ const TransactionList = ({ transactions }: TransactionListProps) => (
           return (
             <div key={t.id} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`rounded-xl p-2 ${isIncome ? "bg-success/10" : "bg-warning/10"}`}>
+                <div className={`rounded-xl p-2 ${isIncome ? "bg-emerald-500/10" : "bg-orange-500/10"}`}>
                   {isIncome ? (
-                    <ArrowDownLeft className="w-4 h-4 text-success" />
+                    <ArrowDownLeft className="w-4 h-4 text-emerald-500" />
                   ) : (
-                    <ArrowUpRight className="w-4 h-4 text-warning" />
+                    <ArrowUpRight className="w-4 h-4 text-orange-500" />
                   )}
                 </div>
                 <div>
@@ -35,7 +35,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => (
                   <p className="text-xs text-muted-foreground">{date}</p>
                 </div>
               </div>
-              <span className={`text-sm font-semibold ${isIncome ? "text-success" : "text-warning"}`}>
+              <span className={`text-sm font-semibold ${isIncome ? "text-emerald-500" : "text-orange-500"}`}>
                 {isIncome ? "+" : "-"}{formatBRL(Math.abs(t.amount))}
               </span>
             </div>

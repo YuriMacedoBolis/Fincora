@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import ExpenseChart from "@/components/dashboard/ExpenseChart";
 import TransactionList from "@/components/dashboard/TransactionList";
+import GoalsSection from "@/components/dashboard/GoalsSection";
 
 export interface Transaction {
   id: string;
@@ -87,6 +88,7 @@ const Dashboard = () => {
             <SummaryCards income={income} expenses={expenses} balance={balance} />
             <ExpenseChart transactions={transactions} />
             <TransactionList transactions={transactions.slice(0, 5)} />
+            <GoalsSection transactions={transactions} />
           </>
         )}
       </main>
