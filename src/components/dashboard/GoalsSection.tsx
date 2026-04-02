@@ -103,12 +103,20 @@ const GoalsSection = ({ transactions }: GoalsSectionProps) => {
             >
               <div className="space-y-2">
                 <Label>Categoria</Label>
-                <Input
-                  placeholder="Ex: Alimentação"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  required
-                />
+                <Select value={category} onValueChange={setCategory} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione uma categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Reserva de Emergência">Reserva de Emergência</SelectItem>
+                    <SelectItem value="Viagem">Viagem</SelectItem>
+                    <SelectItem value="Educação">Educação</SelectItem>
+                    <SelectItem value="Veículo">Veículo</SelectItem>
+                    <SelectItem value="Imóvel">Imóvel</SelectItem>
+                    <SelectItem value="Investimentos">Investimentos</SelectItem>
+                    <SelectItem value="Quitação de Dívidas">Quitação de Dívidas</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label>Limite Mensal (R$)</Label>
