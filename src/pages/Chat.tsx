@@ -47,6 +47,20 @@ const Chat = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
+  // Reset messages when user changes (login/logout)
+  useEffect(() => {
+    if (!storageKey) {
+      setMessages([defaultMessage]);
+      return;
+    }
+    try {
+      const saved = localStorage.getItem(storageKey);
+      setMessages(saved ? JSON.parse(saved) : [defaultMessage]);
+    } catch {
+      setMessages([defaultMessage]);
+    }
+  }, [storageKey]);
+
   const clearChat = () => {
     setMessages([defaultMessage]);
     if (storageKey) localStorage.removeItem(storageKey);
