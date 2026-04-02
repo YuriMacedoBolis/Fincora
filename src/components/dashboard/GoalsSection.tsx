@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,6 +15,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -28,15 +38,35 @@ interface GoalsSectionProps {
   transactions: Transaction[];
 }
 
+const CATEGORIES = [
+  "Reserva de Emergência",
+  "Viagem",
+  "Educação",
+  "Veículo",
+  "Imóvel",
+  "Investimentos",
+  "Quitação de Dívidas",
+];
+
 const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const GoalsSection = ({ transactions }: GoalsSectionProps) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+
+  // Create state
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState("");
   const [monthlyLimit, setMonthlyLimit] = useState("");
+
+  // Edit state
+  const [editGoal, setEditGoal] = useState<{ id: string; category: string; monthly_limit: number } | null>(null);
+  const [editCategory, setEditCategory] = useState("");
+  const [editLimit, setEditLimit] = useState("");
+
+  // Delete state
+  const [deleteGoalId, setDeleteGoalId] = useState<string | null>(null);
 
   const { data: goals = [] } = useQuery({
     queryKey: ["goals", user?.id],
@@ -69,6 +99,43 @@ const GoalsSection = ({ transactions }: GoalsSectionProps) => {
     onError: () => toast.error("Erro ao criar meta."),
   });
 
+  const openEdit = (goal: { id: string; category: string; monthly_limit: number }) => {
+    setEditGoal(goal);
+    setEditCategory(goal.category);
+    setEditLimit(String(goal.monthly_limit));
+  };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editGoal) return;
+    const { error } = await supabase
+      .from("goals")
+      .update({
+        category: editCategory,
+        monthly_limit: parseFloat(editLimit),
+      })
+      .eq("id", editGoal.id);
+    if (error) {
+      toast.error("Erro ao editar meta.");
+    } else {
+      toast.success("Meta atualizada!");
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
+    }
+    setEditGoal(null);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteGoalId) return;
+    const { error } = await supabase.from("goals").delete().eq("id", deleteGoalId);
+    if (error) {
+      toast.error("Erro ao excluir meta.");
+    } else {
+      toast.success("Meta excluída!");
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
+    }
+    setDeleteGoalId(null);
+  };
+
   // Calculate current month spending per category
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
@@ -81,91 +148,147 @@ const GoalsSection = ({ transactions }: GoalsSectionProps) => {
     }, {});
 
   return (
-    <div className="glass rounded-2xl p-5 space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold">Minhas Metas</h2>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button variant="ghost" size="sm" className="gap-1 text-xs">
-              <Plus className="w-4 h-4" /> Nova Meta
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-sm">
-            <DialogHeader>
-              <DialogTitle>Nova Meta Mensal</DialogTitle>
-            </DialogHeader>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                createGoal.mutate();
-              }}
-              className="space-y-4"
-            >
-              <div className="space-y-2">
-                <Label>Categoria</Label>
-                <Select value={category} onValueChange={setCategory} required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione uma categoria" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Reserva de Emergência">Reserva de Emergência</SelectItem>
-                    <SelectItem value="Viagem">Viagem</SelectItem>
-                    <SelectItem value="Educação">Educação</SelectItem>
-                    <SelectItem value="Veículo">Veículo</SelectItem>
-                    <SelectItem value="Imóvel">Imóvel</SelectItem>
-                    <SelectItem value="Investimentos">Investimentos</SelectItem>
-                    <SelectItem value="Quitação de Dívidas">Quitação de Dívidas</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Limite Mensal (R$)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  placeholder="500.00"
-                  value={monthlyLimit}
-                  onChange={(e) => setMonthlyLimit(e.target.value)}
-                  required
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={createGoal.isPending}>
-                {createGoal.isPending ? "Salvando..." : "Criar Meta"}
+    <>
+      <div className="glass rounded-2xl p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-semibold">Minhas Metas</h2>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="sm" className="gap-1 text-xs">
+                <Plus className="w-4 h-4" /> Nova Meta
               </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-sm">
+              <DialogHeader>
+                <DialogTitle>Nova Meta Mensal</DialogTitle>
+              </DialogHeader>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  createGoal.mutate();
+                }}
+                className="space-y-4"
+              >
+                <div className="space-y-2">
+                  <Label>Categoria</Label>
+                  <Select value={category} onValueChange={setCategory} required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma categoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((c) => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Limite Mensal (R$)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    placeholder="500.00"
+                    value={monthlyLimit}
+                    onChange={(e) => setMonthlyLimit(e.target.value)}
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={createGoal.isPending}>
+                  {createGoal.isPending ? "Salvando..." : "Criar Meta"}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {goals.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">
+            Nenhuma meta definida.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {goals.map((goal) => {
+              const spent = spentByCategory[goal.category] || 0;
+              const pct = Math.min((spent / goal.monthly_limit) * 100, 100);
+              const over = spent > goal.monthly_limit;
+              return (
+                <div key={goal.id} className="space-y-1.5">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="font-medium">{goal.category}</span>
+                    <div className="flex items-center gap-2">
+                      <span className={over ? "text-orange-500 font-semibold" : "text-muted-foreground"}>
+                        {formatBRL(spent)} / {formatBRL(goal.monthly_limit)}
+                      </span>
+                      <button onClick={() => openEdit(goal)} className="p-1 rounded-lg hover:bg-secondary transition-colors">
+                        <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
+                      </button>
+                      <button onClick={() => setDeleteGoalId(goal.id)} className="p-1 rounded-lg hover:bg-destructive/10 transition-colors">
+                        <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                      </button>
+                    </div>
+                  </div>
+                  <Progress
+                    value={pct}
+                    className={`h-2 ${over ? "[&>div]:bg-orange-500" : "[&>div]:bg-emerald-500"}`}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      {goals.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-4">
-          Nenhuma meta definida.
-        </p>
-      ) : (
-        <div className="space-y-3">
-          {goals.map((goal) => {
-            const spent = spentByCategory[goal.category] || 0;
-            const pct = Math.min((spent / goal.monthly_limit) * 100, 100);
-            const over = spent > goal.monthly_limit;
-            return (
-              <div key={goal.id} className="space-y-1.5">
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium">{goal.category}</span>
-                  <span className={over ? "text-orange-500 font-semibold" : "text-muted-foreground"}>
-                    {formatBRL(spent)} / {formatBRL(goal.monthly_limit)}
-                  </span>
-                </div>
-                <Progress
-                  value={pct}
-                  className={`h-2 ${over ? "[&>div]:bg-orange-500" : "[&>div]:bg-emerald-500"}`}
-                />
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+      {/* Edit Goal Dialog */}
+      <Dialog open={!!editGoal} onOpenChange={(o) => !o && setEditGoal(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Editar Meta</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEdit} className="space-y-4">
+            <div className="space-y-2">
+              <Label>Categoria</Label>
+              <Select value={editCategory} onValueChange={setEditCategory}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Limite Mensal (R$)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0.01"
+                value={editLimit}
+                onChange={(e) => setEditLimit(e.target.value)}
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full">Salvar</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Goal Confirmation */}
+      <AlertDialog open={!!deleteGoalId} onOpenChange={(o) => !o && setDeleteGoalId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir meta?</AlertDialogTitle>
+            <AlertDialogDescription>Essa ação não pode ser desfeita.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Excluir</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 
