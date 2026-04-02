@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,20 +13,41 @@ interface Message {
 }
 
 const WEBHOOK_URL = "https://en8n.mibagencia.com.br/webhook/fincora-chat";
+const STORAGE_KEY = "fincora-chat-messages";
+
+const defaultMessage: Message = {
+  id: 0,
+  text: "Olá! Sou o Assistente Fincora. Como posso ajudar com suas finanças hoje?",
+  sender: "bot",
+};
 
 const Chat = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 0, text: "Olá! Sou o Assistente Fincora. Como posso ajudar com suas finanças hoje?", sender: "bot" },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [defaultMessage];
+    } catch {
+      return [defaultMessage];
+    }
+  });
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+  }, [messages]);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
+
+  const clearChat = () => {
+    setMessages([defaultMessage]);
+    localStorage.removeItem(STORAGE_KEY);
+  };
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,10 +99,13 @@ const Chat = () => {
         <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <div>
+        <div className="flex-1">
           <p className="text-sm font-semibold">Assistente Fincora</p>
           <p className="text-xs text-muted-foreground">Online</p>
         </div>
+        <Button variant="ghost" size="icon" onClick={clearChat} title="Limpar conversa">
+          <Trash2 className="w-4 h-4 text-muted-foreground" />
+        </Button>
       </header>
 
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">

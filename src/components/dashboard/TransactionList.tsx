@@ -1,4 +1,27 @@
-import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
+import { useState } from "react";
+import { ArrowDownLeft, ArrowUpRight, Pencil, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import type { Transaction } from "@/pages/Dashboard";
 
 interface TransactionListProps {
@@ -8,42 +31,138 @@ interface TransactionListProps {
 const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-const TransactionList = ({ transactions }: TransactionListProps) => (
-  <div className="glass rounded-2xl p-5 space-y-4">
-    <h2 className="text-base font-semibold">Últimas Transações</h2>
-    {transactions.length === 0 ? (
-      <p className="text-sm text-muted-foreground text-center py-4">Nenhuma transação encontrada.</p>
-    ) : (
-      <div className="space-y-3">
-        {transactions.map((t) => {
-          const isIncome = t.type === "entrada";
-          const date = t.created_at
-            ? new Date(t.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })
-            : "";
-          return (
-            <div key={t.id} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className={`rounded-xl p-2 ${isIncome ? "bg-emerald-500/10" : "bg-orange-500/10"}`}>
-                  {isIncome ? (
-                    <ArrowDownLeft className="w-4 h-4 text-emerald-500" />
-                  ) : (
-                    <ArrowUpRight className="w-4 h-4 text-orange-500" />
-                  )}
+const TransactionList = ({ transactions }: TransactionListProps) => {
+  const queryClient = useQueryClient();
+  const [editTx, setEditTx] = useState<Transaction | null>(null);
+  const [deleteTxId, setDeleteTxId] = useState<string | null>(null);
+  const [editDesc, setEditDesc] = useState("");
+  const [editAmount, setEditAmount] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+
+  const openEdit = (t: Transaction) => {
+    setEditTx(t);
+    setEditDesc(t.description);
+    setEditAmount(String(Math.abs(t.amount)));
+    setEditCategory(t.category || "");
+  };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTx) return;
+    const { error } = await supabase
+      .from("transactions")
+      .update({
+        description: editDesc,
+        amount: parseFloat(editAmount),
+        category: editCategory || null,
+      })
+      .eq("id", editTx.id);
+    if (error) {
+      toast.error("Erro ao editar transação.");
+    } else {
+      toast.success("Transação atualizada!");
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    }
+    setEditTx(null);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTxId) return;
+    const { error } = await supabase.from("transactions").delete().eq("id", deleteTxId);
+    if (error) {
+      toast.error("Erro ao excluir transação.");
+    } else {
+      toast.success("Transação excluída!");
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    }
+    setDeleteTxId(null);
+  };
+
+  return (
+    <>
+      <div className="glass rounded-2xl p-5 space-y-4">
+        <h2 className="text-base font-semibold">Últimas Transações</h2>
+        {transactions.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">Nenhuma transação encontrada.</p>
+        ) : (
+          <div className="space-y-3">
+            {transactions.map((t) => {
+              const isIncome = t.type === "entrada";
+              const date = t.created_at
+                ? new Date(t.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })
+                : "";
+              return (
+                <div key={t.id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`rounded-xl p-2 ${isIncome ? "bg-emerald-500/10" : "bg-orange-500/10"}`}>
+                      {isIncome ? (
+                        <ArrowDownLeft className="w-4 h-4 text-emerald-500" />
+                      ) : (
+                        <ArrowUpRight className="w-4 h-4 text-orange-500" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">{t.description}</p>
+                      <p className="text-xs text-muted-foreground">{date}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-semibold ${isIncome ? "text-emerald-500" : "text-orange-500"}`}>
+                      {isIncome ? "+" : "-"}{formatBRL(Math.abs(t.amount))}
+                    </span>
+                    <button onClick={() => openEdit(t)} className="p-1 rounded-lg hover:bg-secondary transition-colors">
+                      <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
+                    </button>
+                    <button onClick={() => setDeleteTxId(t.id)} className="p-1 rounded-lg hover:bg-destructive/10 transition-colors">
+                      <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">{t.description}</p>
-                  <p className="text-xs text-muted-foreground">{date}</p>
-                </div>
-              </div>
-              <span className={`text-sm font-semibold ${isIncome ? "text-emerald-500" : "text-orange-500"}`}>
-                {isIncome ? "+" : "-"}{formatBRL(Math.abs(t.amount))}
-              </span>
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        )}
       </div>
-    )}
-  </div>
-);
+
+      {/* Edit Dialog */}
+      <Dialog open={!!editTx} onOpenChange={(o) => !o && setEditTx(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Editar Transação</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEdit} className="space-y-4">
+            <div className="space-y-2">
+              <Label>Descrição</Label>
+              <Input value={editDesc} onChange={(e) => setEditDesc(e.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Valor (R$)</Label>
+              <Input type="number" step="0.01" min="0.01" value={editAmount} onChange={(e) => setEditAmount(e.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Categoria</Label>
+              <Input value={editCategory} onChange={(e) => setEditCategory(e.target.value)} />
+            </div>
+            <Button type="submit" className="w-full">Salvar</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={!!deleteTxId} onOpenChange={(o) => !o && setDeleteTxId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir transação?</AlertDialogTitle>
+            <AlertDialogDescription>Essa ação não pode ser desfeita.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Excluir</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
 
 export default TransactionList;
