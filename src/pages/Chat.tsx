@@ -120,7 +120,7 @@ const Chat = () => {
                   : "glass rounded-bl-md"
               }`}
             >
-              {msg.text}
+              <span className="whitespace-pre-wrap">{msg.text}</span>
             </div>
           </div>
         ))}
