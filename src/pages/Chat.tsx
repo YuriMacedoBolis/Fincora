@@ -49,7 +49,7 @@ const Chat = () => {
 
   const clearChat = () => {
     setMessages([defaultMessage]);
-    localStorage.removeItem(STORAGE_KEY);
+    if (storageKey) localStorage.removeItem(storageKey);
   };
 
   const sendMessage = async (e: React.FormEvent) => {
