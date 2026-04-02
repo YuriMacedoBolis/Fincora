@@ -13,7 +13,6 @@ interface Message {
 }
 
 const WEBHOOK_URL = "https://en8n.mibagencia.com.br/webhook/fincora-chat";
-const STORAGE_KEY = "fincora-chat-messages";
 
 const defaultMessage: Message = {
   id: 0,
@@ -24,9 +23,11 @@ const defaultMessage: Message = {
 const Chat = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const storageKey = user ? `fincora-chat-messages-${user.id}` : null;
   const [messages, setMessages] = useState<Message[]>(() => {
+    if (!storageKey) return [defaultMessage];
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(storageKey);
       return saved ? JSON.parse(saved) : [defaultMessage];
     } catch {
       return [defaultMessage];
