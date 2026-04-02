@@ -12,7 +12,7 @@ interface Message {
   isError?: boolean;
 }
 
-const WEBHOOK_URL = "https://en8n.mibagencia.com.br/webhook-test/fincora-chat";
+const WEBHOOK_URL = "https://en8n.mibagencia.com.br/webhook/fincora-chat";
 
 const Chat = () => {
   const navigate = useNavigate();
