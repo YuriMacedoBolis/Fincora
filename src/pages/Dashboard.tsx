@@ -65,7 +65,7 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const fullName = profile?.full_name || "Usuário";
+  const firstName = (profile?.full_name || "Usuário").split(" ")[0];
 
   return (
     <div className="min-h-screen pb-24">
