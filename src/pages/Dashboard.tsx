@@ -74,9 +74,12 @@ const Dashboard = () => {
           <p className="text-xs text-muted-foreground">Bem-vindo de volta</p>
           <h1 className="text-lg font-bold">Olá, {fullName} 👋</h1>
         </div>
-        <Button variant="ghost" size="icon" onClick={handleLogout}>
-          <LogOut className="w-5 h-5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <MonthlyReport transactions={transactions} />
+          <Button variant="ghost" size="icon" onClick={handleLogout}>
+            <LogOut className="w-5 h-5" />
+          </Button>
+        </div>
       </header>
 
       <main className="px-5 py-6 space-y-6 max-w-lg mx-auto">
