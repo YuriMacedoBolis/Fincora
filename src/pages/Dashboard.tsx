@@ -65,14 +65,14 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const fullName = profile?.full_name || "Usuário";
+  const firstName = (profile?.full_name || "Usuário").split(" ")[0];
 
   return (
     <div className="min-h-screen pb-24">
-      <header className="sticky top-0 z-10 glass px-6 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-10 glass px-4 sm:px-6 py-4 flex flex-row items-center justify-between gap-2">
         <div>
           <p className="text-xs text-muted-foreground">Bem-vindo de volta</p>
-          <h1 className="text-lg font-bold">Olá, {fullName} 👋</h1>
+          <h1 className="text-lg font-bold truncate">Olá, {firstName} 👋</h1>
         </div>
         <div className="flex items-center gap-2">
           <MonthlyReport transactions={transactions} />

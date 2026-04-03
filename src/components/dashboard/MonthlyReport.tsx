@@ -65,7 +65,7 @@ const MonthlyReport = ({ transactions }: MonthlyReportProps) => {
         className="gap-1.5"
       >
         <FileText className="w-4 h-4" />
-        Relatório do Mês
+        <span className="hidden sm:inline">Relatório do Mês</span>
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
