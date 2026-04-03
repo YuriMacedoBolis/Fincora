@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ArrowDownLeft, ArrowUpRight, Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -31,6 +31,8 @@ interface TransactionListProps {
 const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
+type FilterOption = "all" | 5 | 7 | 10;
+
 const TransactionList = ({ transactions }: TransactionListProps) => {
   const queryClient = useQueryClient();
   const [editTx, setEditTx] = useState<Transaction | null>(null);
@@ -38,6 +40,17 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
   const [editDesc, setEditDesc] = useState("");
   const [editAmount, setEditAmount] = useState("");
   const [editCategory, setEditCategory] = useState("");
+  const [filter, setFilter] = useState<FilterOption>("all");
+
+  const filteredTransactions = useMemo(() => {
+    if (filter === "all") return transactions;
+    const now = new Date();
+    const cutoff = new Date(now.getTime() - filter * 24 * 60 * 60 * 1000);
+    return transactions.filter((t) => {
+      if (!t.created_at) return false;
+      return new Date(t.created_at) >= cutoff;
+    });
+  }, [transactions, filter]);
 
   const openEdit = (t: Transaction) => {
     setEditTx(t);
@@ -81,12 +94,29 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
   return (
     <>
       <div className="glass rounded-2xl p-5 space-y-4">
-        <h2 className="text-base font-semibold">Últimas Transações</h2>
-        {transactions.length === 0 ? (
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <h2 className="text-base font-semibold">Últimas Transações</h2>
+          <div className="flex gap-1">
+            {([5, 7, 10, "all"] as FilterOption[]).map((opt) => (
+              <button
+                key={String(opt)}
+                onClick={() => setFilter(opt)}
+                className={`px-2.5 py-1 text-xs rounded-lg transition-colors ${
+                  filter === opt
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground hover:bg-accent"
+                }`}
+              >
+                {opt === "all" ? "Ver Tudo" : `${opt} dias`}
+              </button>
+            ))}
+          </div>
+        </div>
+        {filteredTransactions.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">Nenhuma transação encontrada.</p>
         ) : (
           <div className="space-y-3">
-            {transactions.map((t) => {
+            {filteredTransactions.map((t) => {
               const isIncome = t.type === "entrada";
               const date = t.created_at
                 ? new Date(t.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })
