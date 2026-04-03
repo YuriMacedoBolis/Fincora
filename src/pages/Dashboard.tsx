@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut, MessageCircle } from "lucide-react";
+import MonthlyReport from "@/components/dashboard/MonthlyReport";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
