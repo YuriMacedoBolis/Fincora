@@ -94,12 +94,29 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
   return (
     <>
       <div className="glass rounded-2xl p-5 space-y-4">
-        <h2 className="text-base font-semibold">Últimas Transações</h2>
-        {transactions.length === 0 ? (
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <h2 className="text-base font-semibold">Últimas Transações</h2>
+          <div className="flex gap-1">
+            {([5, 7, 10, "all"] as FilterOption[]).map((opt) => (
+              <button
+                key={String(opt)}
+                onClick={() => setFilter(opt)}
+                className={`px-2.5 py-1 text-xs rounded-lg transition-colors ${
+                  filter === opt
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground hover:bg-accent"
+                }`}
+              >
+                {opt === "all" ? "Ver Tudo" : `${opt} dias`}
+              </button>
+            ))}
+          </div>
+        </div>
+        {filteredTransactions.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">Nenhuma transação encontrada.</p>
         ) : (
           <div className="space-y-3">
-            {transactions.map((t) => {
+            {filteredTransactions.map((t) => {
               const isIncome = t.type === "entrada";
               const date = t.created_at
                 ? new Date(t.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })
