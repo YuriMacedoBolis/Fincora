@@ -113,7 +113,12 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
           </div>
         </div>
         {filteredTransactions.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">Nenhuma transação encontrada.</p>
+          <div className="flex flex-col items-center justify-center py-10 space-y-2">
+            <span className="text-3xl">📋</span>
+            <p className="text-sm text-muted-foreground text-center max-w-[220px]">
+              Nenhuma transação por aqui ainda. Mande uma mensagem no chat para começar!
+            </p>
+          </div>
         ) : (
           <div className="space-y-3">
             {filteredTransactions.map((t) => {
