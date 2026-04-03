@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ArrowDownLeft, ArrowUpRight, Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -31,6 +31,8 @@ interface TransactionListProps {
 const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
+type FilterOption = "all" | 5 | 7 | 10;
+
 const TransactionList = ({ transactions }: TransactionListProps) => {
   const queryClient = useQueryClient();
   const [editTx, setEditTx] = useState<Transaction | null>(null);
@@ -38,6 +40,17 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
   const [editDesc, setEditDesc] = useState("");
   const [editAmount, setEditAmount] = useState("");
   const [editCategory, setEditCategory] = useState("");
+  const [filter, setFilter] = useState<FilterOption>("all");
+
+  const filteredTransactions = useMemo(() => {
+    if (filter === "all") return transactions;
+    const now = new Date();
+    const cutoff = new Date(now.getTime() - filter * 24 * 60 * 60 * 1000);
+    return transactions.filter((t) => {
+      if (!t.created_at) return false;
+      return new Date(t.created_at) >= cutoff;
+    });
+  }, [transactions, filter]);
 
   const openEdit = (t: Transaction) => {
     setEditTx(t);
