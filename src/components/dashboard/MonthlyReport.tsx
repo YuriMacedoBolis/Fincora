@@ -16,8 +16,10 @@ interface MonthlyReportProps {
 const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-const MonthlyReport = ({ transactions }: MonthlyReportProps) => {
-  const [open, setOpen] = useState(false);
+const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: MonthlyReportProps & { open?: boolean; onOpenChange?: (v: boolean) => void }) => {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
 
   const report = useMemo(() => {
     const now = new Date();
@@ -58,17 +60,19 @@ const MonthlyReport = ({ transactions }: MonthlyReportProps) => {
 
   return (
     <>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setOpen(true)}
-        className="gap-1.5"
-      >
-        <FileText className="w-4 h-4" />
-        <span className="hidden sm:inline">Relatório do Mês</span>
-      </Button>
+      {controlledOpen === undefined && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setOpen(true)}
+          className="gap-1.5"
+        >
+          <FileText className="w-4 h-4" />
+          <span className="hidden sm:inline">Relatório do Mês</span>
+        </Button>
+      )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={isOpen} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="capitalize">

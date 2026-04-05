@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, MessageCircle } from "lucide-react";
 import MonthlyReport from "@/components/dashboard/MonthlyReport";
@@ -9,6 +10,7 @@ import SummaryCards from "@/components/dashboard/SummaryCards";
 import ExpenseChart from "@/components/dashboard/ExpenseChart";
 import TransactionList from "@/components/dashboard/TransactionList";
 import GoalsSection from "@/components/dashboard/GoalsSection";
+import BottomNav from "@/components/dashboard/BottomNav";
 
 export interface Transaction {
   id: string;
@@ -22,6 +24,7 @@ export interface Transaction {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const [reportOpen, setReportOpen] = useState(false);
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -68,14 +71,17 @@ const Dashboard = () => {
   const firstName = (profile?.full_name || "Usuário").split(" ")[0];
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-24 md:pb-24">
       <header className="sticky top-0 z-10 glass px-4 sm:px-6 py-4 flex flex-row items-center justify-between gap-2">
         <div>
           <p className="text-xs text-muted-foreground">Bem-vindo de volta</p>
           <h1 className="text-lg font-bold truncate">Olá, {firstName} 👋</h1>
         </div>
         <div className="flex items-center gap-2">
-          <MonthlyReport transactions={transactions} />
+          {/* Report button: hidden on mobile, visible on md+ */}
+          <div className="hidden md:block">
+            <MonthlyReport transactions={transactions} />
+          </div>
           <Button variant="ghost" size="icon" onClick={handleLogout}>
             <LogOut className="w-5 h-5" />
           </Button>
@@ -97,12 +103,19 @@ const Dashboard = () => {
         )}
       </main>
 
+      {/* Floating chat button: only on desktop */}
       <button
         onClick={() => navigate("/chat")}
-        className="fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg shadow-primary/30 hover:scale-105 transition-transform"
+        className="hidden md:flex fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg shadow-primary/30 hover:scale-105 transition-transform items-center justify-center"
       >
         <MessageCircle className="w-6 h-6" />
       </button>
+
+      {/* Bottom nav: only on mobile */}
+      <BottomNav onReportClick={() => setReportOpen(true)} />
+
+      {/* Report dialog controlled from bottom nav */}
+      <MonthlyReport transactions={transactions} open={reportOpen} onOpenChange={setReportOpen} />
     </div>
   );
 };
