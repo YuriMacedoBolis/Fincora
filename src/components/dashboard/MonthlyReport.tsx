@@ -16,8 +16,10 @@ interface MonthlyReportProps {
 const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-const MonthlyReport = ({ transactions }: MonthlyReportProps) => {
-  const [open, setOpen] = useState(false);
+const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: MonthlyReportProps & { open?: boolean; onOpenChange?: (v: boolean) => void }) => {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
 
   const report = useMemo(() => {
     const now = new Date();
