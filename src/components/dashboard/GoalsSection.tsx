@@ -136,16 +136,6 @@ const GoalsSection = ({ transactions }: GoalsSectionProps) => {
     setDeleteGoalId(null);
   };
 
-  // Calculate current month spending per category
-  const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const spentByCategory = transactions
-    .filter((t) => t.type === "saida" && t.created_at && t.created_at >= monthStart)
-    .reduce<Record<string, number>>((acc, t) => {
-      const cat = t.category || "Outros";
-      acc[cat] = (acc[cat] || 0) + Math.abs(t.amount);
-      return acc;
-    }, {});
 
   return (
     <>
