@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, MessageCircle } from "lucide-react";
+import { LogOut } from "lucide-react";
 import MonthlyReport from "@/components/dashboard/MonthlyReport";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,6 +10,7 @@ import SummaryCards from "@/components/dashboard/SummaryCards";
 import ExpenseChart from "@/components/dashboard/ExpenseChart";
 import TransactionList from "@/components/dashboard/TransactionList";
 import GoalsSection from "@/components/dashboard/GoalsSection";
+import BottomNav from "@/components/dashboard/BottomNav";
 
 export interface Transaction {
   id: string;

@@ -70,7 +70,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
         <span className="hidden sm:inline">Relatório do Mês</span>
       </Button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={isOpen} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="capitalize">
