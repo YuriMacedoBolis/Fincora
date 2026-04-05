@@ -92,7 +92,7 @@ const Dashboard = () => {
             <SummaryCards income={income} expenses={expenses} balance={balance} />
             <ExpenseChart transactions={transactions} />
             <TransactionList transactions={transactions.slice(0, 5)} />
-            <GoalsSection transactions={transactions} />
+            <GoalsSection />
           </>
         )}
       </main>

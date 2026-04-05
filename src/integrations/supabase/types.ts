@@ -17,18 +17,21 @@ export type Database = {
       goals: {
         Row: {
           category: string
+          current_amount: number | null
           id: string
           monthly_limit: number
           user_id: string
         }
         Insert: {
           category: string
+          current_amount?: number | null
           id?: string
           monthly_limit: number
           user_id?: string
         }
         Update: {
           category?: string
+          current_amount?: number | null
           id?: string
           monthly_limit?: number
           user_id?: string

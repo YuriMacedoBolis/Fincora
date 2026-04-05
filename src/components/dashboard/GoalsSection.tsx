@@ -32,11 +32,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import type { Transaction } from "@/pages/Dashboard";
 
-interface GoalsSectionProps {
-  transactions: Transaction[];
-}
+
 
 const CATEGORIES = [
   "Reserva de Emergência",
@@ -51,7 +48,7 @@ const CATEGORIES = [
 const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-const GoalsSection = ({ transactions }: GoalsSectionProps) => {
+const GoalsSection = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
@@ -136,16 +133,6 @@ const GoalsSection = ({ transactions }: GoalsSectionProps) => {
     setDeleteGoalId(null);
   };
 
-  // Calculate current month spending per category
-  const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const spentByCategory = transactions
-    .filter((t) => t.type === "saida" && t.created_at && t.created_at >= monthStart)
-    .reduce<Record<string, number>>((acc, t) => {
-      const cat = t.category || "Outros";
-      acc[cat] = (acc[cat] || 0) + Math.abs(t.amount);
-      return acc;
-    }, {});
 
   return (
     <>
@@ -209,16 +196,16 @@ const GoalsSection = ({ transactions }: GoalsSectionProps) => {
         ) : (
           <div className="space-y-3">
             {goals.map((goal) => {
-              const spent = spentByCategory[goal.category] || 0;
-              const pct = Math.min((spent / goal.monthly_limit) * 100, 100);
-              const over = spent > goal.monthly_limit;
+              const current = goal.current_amount ?? 0;
+              const pct = goal.monthly_limit > 0 ? Math.min((current / goal.monthly_limit) * 100, 100) : 0;
+              const reached = current >= goal.monthly_limit;
               return (
                 <div key={goal.id} className="space-y-1.5">
                   <div className="flex justify-between items-center text-sm">
                     <span className="font-medium">{goal.category}</span>
                     <div className="flex items-center gap-2">
-                      <span className={over ? "text-orange-500 font-semibold" : "text-muted-foreground"}>
-                        {formatBRL(spent)} / {formatBRL(goal.monthly_limit)}
+                      <span className={reached ? "text-emerald-500 font-semibold" : "text-muted-foreground"}>
+                        {formatBRL(current)} / {formatBRL(goal.monthly_limit)}
                       </span>
                       <button onClick={() => openEdit(goal)} className="p-1 rounded-lg hover:bg-secondary transition-colors">
                         <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
@@ -230,7 +217,7 @@ const GoalsSection = ({ transactions }: GoalsSectionProps) => {
                   </div>
                   <Progress
                     value={pct}
-                    className={`h-2 ${over ? "[&>div]:bg-orange-500" : "[&>div]:bg-emerald-500"}`}
+                    className={`h-2 ${reached ? "[&>div]:bg-emerald-500" : "[&>div]:bg-primary"}`}
                   />
                 </div>
               );
