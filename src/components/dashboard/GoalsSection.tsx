@@ -51,7 +51,7 @@ const CATEGORIES = [
 const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-const GoalsSection = ({ transactions }: GoalsSectionProps) => {
+const GoalsSection = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
