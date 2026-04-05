@@ -142,7 +142,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`text-sm font-semibold ${isIncome ? "text-emerald-500" : "text-orange-500"}`}>
+                    <span className={`text-sm font-semibold whitespace-nowrap ${isIncome ? "text-emerald-500" : "text-orange-500"}`}>
                       {isIncome ? "+" : "-"}{formatBRL(Math.abs(t.amount))}
                     </span>
                     <button onClick={() => openEdit(t)} className="p-1 rounded-lg hover:bg-secondary transition-colors">
