@@ -32,11 +32,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import type { Transaction } from "@/pages/Dashboard";
 
-interface GoalsSectionProps {
-  transactions: Transaction[];
-}
+
 
 const CATEGORIES = [
   "Reserva de Emergência",
