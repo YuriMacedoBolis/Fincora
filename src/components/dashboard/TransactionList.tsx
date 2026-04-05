@@ -98,22 +98,32 @@ const TransactionList = ({ transactions, showFilters = true }: TransactionListPr
     <>
       <div className="glass rounded-2xl p-5 space-y-4">
         <div className="flex items-center justify-between gap-2 flex-wrap">
-          <h2 className="text-base font-semibold">Últimas Transações</h2>
-          <div className="flex gap-1">
-            {([5, 7, 10, "all"] as FilterOption[]).map((opt) => (
+          <h2 className="text-base font-semibold">
+            {showFilters ? "Últimas Transações" : "Todas as Transações"}
+          </h2>
+          {showFilters && (
+            <div className="flex gap-1">
+              {([5, 7, 10] as FilterOption[]).map((opt) => (
+                <button
+                  key={String(opt)}
+                  onClick={() => setFilter(opt)}
+                  className={`px-2.5 py-1 text-xs rounded-lg transition-colors ${
+                    filter === opt
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-muted-foreground hover:bg-accent"
+                  }`}
+                >
+                  {`${opt} dias`}
+                </button>
+              ))}
               <button
-                key={String(opt)}
-                onClick={() => setFilter(opt)}
-                className={`px-2.5 py-1 text-xs rounded-lg transition-colors ${
-                  filter === opt
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-muted-foreground hover:bg-accent"
-                }`}
+                onClick={() => navigate("/historico")}
+                className="px-2.5 py-1 text-xs rounded-lg transition-colors bg-secondary text-muted-foreground hover:bg-accent"
               >
-                {opt === "all" ? "Ver Tudo" : `${opt} dias`}
+                Ver Tudo
               </button>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
         {filteredTransactions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-10 space-y-2">
