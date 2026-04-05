@@ -27,6 +27,7 @@ import type { Transaction } from "@/pages/Dashboard";
 
 interface TransactionListProps {
   transactions: Transaction[];
+  showFilters?: boolean;
 }
 
 const formatBRL = (value: number) =>
