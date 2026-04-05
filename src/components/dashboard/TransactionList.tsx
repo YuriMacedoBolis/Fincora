@@ -35,7 +35,8 @@ const formatBRL = (value: number) =>
 
 type FilterOption = "all" | 5 | 7 | 10;
 
-const TransactionList = ({ transactions }: TransactionListProps) => {
+const TransactionList = ({ transactions, showFilters = true }: TransactionListProps) => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [editTx, setEditTx] = useState<Transaction | null>(null);
   const [deleteTxId, setDeleteTxId] = useState<string | null>(null);
