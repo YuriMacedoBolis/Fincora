@@ -90,7 +90,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 <span className="text-xs font-medium">Saldo Final</span>
               </div>
               <p className="text-lg font-bold text-primary">
-                {formatBRL(report.balance)}
+                {formatBRL(balance)}
               </p>
             </div>
 
