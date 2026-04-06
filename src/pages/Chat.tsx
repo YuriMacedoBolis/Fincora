@@ -97,6 +97,8 @@ const Chat = () => {
         sender: "bot",
       };
       setMessages((prev) => [...prev, botMsg]);
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     } catch {
       setMessages((prev) => [
         ...prev,
