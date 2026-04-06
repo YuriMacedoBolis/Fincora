@@ -30,7 +30,7 @@ const BottomNav = ({ onReportClick }: BottomNavProps) => {
 
         {/* Profile */}
         <button
-          onClick={() => {}}
+          onClick={() => navigate("/perfil")}
           className="flex flex-col items-center gap-1 py-2 px-4 text-muted-foreground hover:text-foreground transition-colors"
         >
           <User className="w-5 h-5" />
