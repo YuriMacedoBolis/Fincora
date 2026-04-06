@@ -78,6 +78,7 @@ const TransactionList = ({ transactions, showFilters = true }: TransactionListPr
     } else {
       toast.success("Transação atualizada!");
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     }
     setEditTx(null);
   };
