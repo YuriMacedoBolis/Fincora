@@ -21,40 +21,23 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
   const isOpen = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
 
-  const report = useMemo(() => {
-    const now = new Date();
-    const month = now.getMonth();
-    const year = now.getFullYear();
+  const { income, expenses, balance, monthlyTransactions } = useFinancialSummary(transactions);
 
-    const monthly = transactions.filter((t) => {
-      if (!t.created_at) return false;
-      const d = new Date(t.created_at);
-      return d.getMonth() === month && d.getFullYear() === year;
-    });
-
-    const income = monthly
-      .filter((t) => t.type === "entrada")
-      .reduce((s, t) => s + Number(t.amount), 0);
-
-    const expenses = monthly
-      .filter((t) => t.type === "saida")
-      .reduce((s, t) => s + Math.abs(Number(t.amount)), 0);
-
+  const topCategory = useMemo(() => {
     const categoryMap: Record<string, number> = {};
-    monthly
+    monthlyTransactions
       .filter((t) => t.type === "saida")
       .forEach((t) => {
         const cat = t.category || "Sem categoria";
         categoryMap[cat] = (categoryMap[cat] || 0) + Math.abs(Number(t.amount));
       });
 
-    let topCategory = { name: "—", value: 0 };
+    let top = { name: "—", value: 0 };
     for (const [name, value] of Object.entries(categoryMap)) {
-      if (value > topCategory.value) topCategory = { name, value };
+      if (value > top.value) top = { name, value };
     }
-
-    return { income, expenses, balance: income - expenses, topCategory };
-  }, [transactions]);
+    return top;
+  }, [monthlyTransactions]);
 
   const monthName = new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
 
