@@ -4,6 +4,7 @@ import { ArrowLeft, Send, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Message {
   id: number;
@@ -23,6 +24,7 @@ const defaultMessage: Message = {
 const Chat = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const storageKey = user ? `fincora-chat-messages-${user.id}` : null;
   const [messages, setMessages] = useState<Message[]>(() => {
     if (!storageKey) return [defaultMessage];
@@ -95,6 +97,8 @@ const Chat = () => {
         sender: "bot",
       };
       setMessages((prev) => [...prev, botMsg]);
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     } catch {
       setMessages((prev) => [
         ...prev,
