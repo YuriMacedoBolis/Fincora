@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { FileText, TrendingUp, TrendingDown, Wallet, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useFinancialSummary } from "@/hooks/useFinancialSummary";
 import {
   Dialog,
   DialogContent,
