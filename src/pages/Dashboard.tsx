@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { useFinancialSummary } from "@/hooks/useFinancialSummary";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import ExpenseChart from "@/components/dashboard/ExpenseChart";
 import TransactionList from "@/components/dashboard/TransactionList";

@@ -100,10 +100,10 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 <span className="text-xs font-medium">Maior Gasto</span>
               </div>
               <p className="text-sm font-bold text-foreground">
-                {report.topCategory.name}
+                {topCategory.name}
               </p>
               <p className="text-xs text-muted-foreground">
-                {formatBRL(report.topCategory.value)}
+                {formatBRL(topCategory.value)}
               </p>
             </div>
           </div>
