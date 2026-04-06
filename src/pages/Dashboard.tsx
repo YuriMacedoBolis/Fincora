@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { useFinancialSummary } from "@/hooks/useFinancialSummary";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import ExpenseChart from "@/components/dashboard/ExpenseChart";
 import TransactionList from "@/components/dashboard/TransactionList";
@@ -53,15 +54,7 @@ const Dashboard = () => {
     enabled: !!user,
   });
 
-  const income = transactions
-    .filter((t) => t.type === "entrada")
-    .reduce((sum, t) => sum + Number(t.amount), 0);
-
-  const expenses = transactions
-    .filter((t) => t.type === "saida")
-    .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
-
-  const balance = income - expenses;
+  const { income, expenses, balance } = useFinancialSummary(transactions);
 
   const handleLogout = async () => {
     await signOut();

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { FileText, TrendingUp, TrendingDown, Wallet, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useFinancialSummary } from "@/hooks/useFinancialSummary";
 import {
   Dialog,
   DialogContent,
@@ -21,40 +22,23 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
   const isOpen = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
 
-  const report = useMemo(() => {
-    const now = new Date();
-    const month = now.getMonth();
-    const year = now.getFullYear();
+  const { income, expenses, balance, monthlyTransactions } = useFinancialSummary(transactions);
 
-    const monthly = transactions.filter((t) => {
-      if (!t.created_at) return false;
-      const d = new Date(t.created_at);
-      return d.getMonth() === month && d.getFullYear() === year;
-    });
-
-    const income = monthly
-      .filter((t) => t.type === "entrada")
-      .reduce((s, t) => s + Number(t.amount), 0);
-
-    const expenses = monthly
-      .filter((t) => t.type === "saida")
-      .reduce((s, t) => s + Math.abs(Number(t.amount)), 0);
-
+  const topCategory = useMemo(() => {
     const categoryMap: Record<string, number> = {};
-    monthly
+    monthlyTransactions
       .filter((t) => t.type === "saida")
       .forEach((t) => {
         const cat = t.category || "Sem categoria";
         categoryMap[cat] = (categoryMap[cat] || 0) + Math.abs(Number(t.amount));
       });
 
-    let topCategory = { name: "—", value: 0 };
+    let top = { name: "—", value: 0 };
     for (const [name, value] of Object.entries(categoryMap)) {
-      if (value > topCategory.value) topCategory = { name, value };
+      if (value > top.value) top = { name, value };
     }
-
-    return { income, expenses, balance: income - expenses, topCategory };
-  }, [transactions]);
+    return top;
+  }, [monthlyTransactions]);
 
   const monthName = new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
 
@@ -87,7 +71,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 <span className="text-xs font-medium">Entradas</span>
               </div>
               <p className="text-lg font-bold text-emerald-500">
-                {formatBRL(report.income)}
+                {formatBRL(income)}
               </p>
             </div>
 
@@ -97,7 +81,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 <span className="text-xs font-medium">Saídas</span>
               </div>
               <p className="text-lg font-bold text-orange-500">
-                {formatBRL(report.expenses)}
+                {formatBRL(expenses)}
               </p>
             </div>
 
@@ -107,7 +91,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 <span className="text-xs font-medium">Saldo Final</span>
               </div>
               <p className="text-lg font-bold text-primary">
-                {formatBRL(report.balance)}
+                {formatBRL(balance)}
               </p>
             </div>
 
@@ -117,10 +101,10 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 <span className="text-xs font-medium">Maior Gasto</span>
               </div>
               <p className="text-sm font-bold text-foreground">
-                {report.topCategory.name}
+                {topCategory.name}
               </p>
               <p className="text-xs text-muted-foreground">
-                {formatBRL(report.topCategory.value)}
+                {formatBRL(topCategory.value)}
               </p>
             </div>
           </div>
