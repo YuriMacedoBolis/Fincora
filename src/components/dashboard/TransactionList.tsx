@@ -90,6 +90,7 @@ const TransactionList = ({ transactions, showFilters = true }: TransactionListPr
     } else {
       toast.success("Transação excluída!");
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     }
     setDeleteTxId(null);
   };
