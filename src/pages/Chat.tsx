@@ -24,6 +24,7 @@ const defaultMessage: Message = {
 const Chat = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const storageKey = user ? `fincora-chat-messages-${user.id}` : null;
   const [messages, setMessages] = useState<Message[]>(() => {
     if (!storageKey) return [defaultMessage];
