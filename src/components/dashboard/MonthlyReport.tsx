@@ -80,7 +80,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 <span className="text-xs font-medium">Saídas</span>
               </div>
               <p className="text-lg font-bold text-orange-500">
-                {formatBRL(report.expenses)}
+                {formatBRL(expenses)}
               </p>
             </div>
 
