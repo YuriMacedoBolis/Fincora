@@ -40,6 +40,7 @@ const Perfil = () => {
   const [categories, setCategories] = useState(CATEGORIES_DEFAULT);
   const [newCategory, setNewCategory] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
+  const [savingPhone, setSavingPhone] = useState(false);
 
   // Change password state
   const [changePassOpen, setChangePassOpen] = useState(false);
