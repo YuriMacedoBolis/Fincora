@@ -104,10 +104,7 @@ const Perfil = () => {
     setSavingProfile(true);
     const { error } = await supabase
       .from("profiles")
-      .update({
-        full_name: editName.trim(),
-        phone: sanitizePhone(editPhone) || null,
-      })
+      .update({ full_name: editName.trim() })
       .eq("id", user!.id);
     if (error) {
       toast.error("Erro ao salvar perfil");
