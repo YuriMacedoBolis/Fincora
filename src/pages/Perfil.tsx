@@ -232,7 +232,13 @@ const Perfil = () => {
                   </div>
                   <div className="space-y-2">
                     <Label>Telefone</Label>
-                    <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="(11) 99999-9999" />
+                    <Input
+                      value={editPhone}
+                      onChange={(e) => setEditPhone(formatPhone(e.target.value))}
+                      placeholder="(11) 99999-9999"
+                      maxLength={16}
+                      inputMode="tel"
+                    />
                   </div>
                   <Button onClick={handleSaveProfile} disabled={savingProfile} className="w-full">
                     {savingProfile ? "Salvando..." : "Salvar"}
