@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       goals: {
         Row: {
           category: string
@@ -40,21 +61,33 @@ export type Database = {
       }
       profiles: {
         Row: {
-          financial_goal: number | null
+          avatar_url: string | null
+          currency: string | null
+          display_name: string | null
           full_name: string | null
           id: string
+          phone: string | null
+          theme: string | null
           updated_at: string | null
         }
         Insert: {
-          financial_goal?: number | null
+          avatar_url?: string | null
+          currency?: string | null
+          display_name?: string | null
           full_name?: string | null
           id: string
+          phone?: string | null
+          theme?: string | null
           updated_at?: string | null
         }
         Update: {
-          financial_goal?: number | null
+          avatar_url?: string | null
+          currency?: string | null
+          display_name?: string | null
           full_name?: string | null
           id?: string
+          phone?: string | null
+          theme?: string | null
           updated_at?: string | null
         }
         Relationships: []

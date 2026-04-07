@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Pencil, LogOut, Trash2, AlertTriangle, ChevronRight, Moon, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,8 +25,7 @@ const Perfil = () => {
 
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [editName, setEditName] = useState("");
-  const [darkMode, setDarkMode] = useState(false);
-  const [currency, setCurrency] = useState("BRL");
+  const [editPhone, setEditPhone] = useState("");
   const [categories, setCategories] = useState(CATEGORIES_DEFAULT);
   const [newCategory, setNewCategory] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
@@ -46,7 +45,7 @@ const Perfil = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name")
+        .select("full_name, display_name, phone, currency, theme")
         .eq("id", user!.id)
         .single();
       if (error) throw error;
@@ -63,12 +62,19 @@ const Perfil = () => {
     .slice(0, 2)
     .toUpperCase();
 
+  const currentCurrency = profile?.currency || "BRL";
+  const currentTheme = profile?.theme || "light";
+  const darkMode = currentTheme === "dark";
+
   const handleSaveProfile = async () => {
     if (!editName.trim()) return;
     setSavingProfile(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ full_name: editName.trim() })
+      .update({
+        full_name: editName.trim(),
+        phone: editPhone.trim() || null,
+      })
       .eq("id", user!.id);
     if (error) {
       toast.error("Erro ao salvar perfil");
@@ -78,6 +84,32 @@ const Perfil = () => {
       setEditProfileOpen(false);
     }
     setSavingProfile(false);
+  };
+
+  const handleCurrencyChange = async (value: string) => {
+    const { error } = await supabase
+      .from("profiles")
+      .update({ currency: value })
+      .eq("id", user!.id);
+    if (error) {
+      toast.error("Erro ao salvar moeda");
+    } else {
+      toast.success("Moeda atualizada!");
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    }
+  };
+
+  const handleThemeToggle = async (checked: boolean) => {
+    const theme = checked ? "dark" : "light";
+    const { error } = await supabase
+      .from("profiles")
+      .update({ theme })
+      .eq("id", user!.id);
+    if (error) {
+      toast.error("Erro ao salvar tema");
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    }
   };
 
   const handleChangePassword = async () => {
@@ -129,7 +161,6 @@ const Perfil = () => {
     if (error) {
       toast.error("Erro ao apagar registros");
     } else {
-      // Reset goals current_amount
       await supabase.from("goals").delete().eq("user_id", user!.id);
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
@@ -163,8 +194,17 @@ const Perfil = () => {
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-lg truncate">{fullName}</p>
               <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
+              {profile?.phone && (
+                <p className="text-xs text-muted-foreground truncate">{profile.phone}</p>
+              )}
             </div>
-            <Dialog open={editProfileOpen} onOpenChange={(o) => { setEditProfileOpen(o); if (o) setEditName(fullName); }}>
+            <Dialog open={editProfileOpen} onOpenChange={(o) => {
+              setEditProfileOpen(o);
+              if (o) {
+                setEditName(fullName);
+                setEditPhone(profile?.phone || "");
+              }
+            }}>
               <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="shrink-0">
                   <Pencil className="w-4 h-4" />
@@ -178,6 +218,10 @@ const Perfil = () => {
                   <div className="space-y-2">
                     <Label>Nome completo</Label>
                     <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Seu nome" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Telefone</Label>
+                    <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="(11) 99999-9999" />
                   </div>
                   <Button onClick={handleSaveProfile} disabled={savingProfile} className="w-full">
                     {savingProfile ? "Salvando..." : "Salvar"}
@@ -253,7 +297,7 @@ const Perfil = () => {
                 <Moon className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm">Modo Escuro</span>
               </div>
-              <Switch checked={darkMode} onCheckedChange={setDarkMode} />
+              <Switch checked={darkMode} onCheckedChange={handleThemeToggle} />
             </div>
 
             <div className="h-px bg-border/50" />
@@ -261,7 +305,7 @@ const Perfil = () => {
             {/* Currency */}
             <div className="flex items-center justify-between gap-4">
               <span className="text-sm">Moeda Principal</span>
-              <Select value={currency} onValueChange={setCurrency}>
+              <Select value={currentCurrency} onValueChange={handleCurrencyChange}>
                 <SelectTrigger className="w-32">
                   <SelectValue />
                 </SelectTrigger>
