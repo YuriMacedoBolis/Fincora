@@ -84,7 +84,7 @@ const Perfil = () => {
       .from("profiles")
       .update({
         full_name: editName.trim(),
-        phone: editPhone.trim() || null,
+        phone: sanitizePhone(editPhone) || null,
       })
       .eq("id", user!.id);
     if (error) {
