@@ -75,6 +75,9 @@ const Dashboard = () => {
           <div className="hidden md:block">
             <MonthlyReport transactions={transactions} />
           </div>
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/perfil")}>
+            <User className="w-5 h-5" />
+          </Button>
           <Button variant="ghost" size="icon" onClick={handleLogout}>
             <LogOut className="w-5 h-5" />
           </Button>
