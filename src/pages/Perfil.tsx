@@ -77,6 +77,27 @@ const Perfil = () => {
   const currentCurrency = profile?.currency || "BRL";
   const currentTheme = profile?.theme || "light";
   const darkMode = currentTheme === "dark";
+  // Initialize editPhone from profile data
+  useEffect(() => {
+    if (profile?.phone) {
+      setEditPhone(formatPhone(profile.phone));
+    }
+  }, [profile?.phone]);
+
+  const handleSavePhone = async () => {
+    setSavingPhone(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ phone: sanitizePhone(editPhone) || null })
+      .eq("id", user!.id);
+    if (error) {
+      toast.error("Erro ao salvar telefone");
+    } else {
+      toast.success("Telefone atualizado!");
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    }
+    setSavingPhone(false);
+  };
 
   const handleSaveProfile = async () => {
     if (!editName.trim()) return;
