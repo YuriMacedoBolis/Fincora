@@ -206,7 +206,7 @@ const Perfil = () => {
               <p className="font-semibold text-lg truncate">{fullName}</p>
               <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
               {profile?.phone && (
-                <p className="text-xs text-muted-foreground truncate">{profile.phone}</p>
+                <p className="text-xs text-muted-foreground truncate">{formatPhone(profile.phone)}</p>
               )}
             </div>
             <Dialog open={editProfileOpen} onOpenChange={(o) => {
