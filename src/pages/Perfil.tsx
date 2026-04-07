@@ -18,6 +18,17 @@ import { toast } from "sonner";
 
 const CATEGORIES_DEFAULT = ["Alimentação", "Lazer", "Transporte", "Saúde", "Educação", "Moradia"];
 
+/** Aplica máscara (XX) XXXXX-XXXX a uma string de dígitos */
+const formatPhone = (digits: string): string => {
+  const d = digits.replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 2) return d;
+  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+};
+
+/** Remove tudo que não é dígito */
+const sanitizePhone = (value: string): string => value.replace(/\D/g, "");
+
 const Perfil = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
