@@ -213,7 +213,7 @@ const Perfil = () => {
               setEditProfileOpen(o);
               if (o) {
                 setEditName(fullName);
-                setEditPhone(profile?.phone || "");
+                setEditPhone(formatPhone(profile?.phone || ""));
               }
             }}>
               <DialogTrigger asChild>
