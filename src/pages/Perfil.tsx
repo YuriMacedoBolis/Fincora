@@ -18,6 +18,17 @@ import { toast } from "sonner";
 
 const CATEGORIES_DEFAULT = ["Alimentação", "Lazer", "Transporte", "Saúde", "Educação", "Moradia"];
 
+/** Aplica máscara (XX) XXXXX-XXXX a uma string de dígitos */
+const formatPhone = (digits: string): string => {
+  const d = digits.replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 2) return d;
+  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+};
+
+/** Remove tudo que não é dígito */
+const sanitizePhone = (value: string): string => value.replace(/\D/g, "");
+
 const Perfil = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -73,7 +84,7 @@ const Perfil = () => {
       .from("profiles")
       .update({
         full_name: editName.trim(),
-        phone: editPhone.trim() || null,
+        phone: sanitizePhone(editPhone) || null,
       })
       .eq("id", user!.id);
     if (error) {
@@ -195,14 +206,14 @@ const Perfil = () => {
               <p className="font-semibold text-lg truncate">{fullName}</p>
               <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
               {profile?.phone && (
-                <p className="text-xs text-muted-foreground truncate">{profile.phone}</p>
+                <p className="text-xs text-muted-foreground truncate">{formatPhone(profile.phone)}</p>
               )}
             </div>
             <Dialog open={editProfileOpen} onOpenChange={(o) => {
               setEditProfileOpen(o);
               if (o) {
                 setEditName(fullName);
-                setEditPhone(profile?.phone || "");
+                setEditPhone(formatPhone(profile?.phone || ""));
               }
             }}>
               <DialogTrigger asChild>
@@ -221,7 +232,13 @@ const Perfil = () => {
                   </div>
                   <div className="space-y-2">
                     <Label>Telefone</Label>
-                    <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="(11) 99999-9999" />
+                    <Input
+                      value={editPhone}
+                      onChange={(e) => setEditPhone(formatPhone(e.target.value))}
+                      placeholder="(11) 99999-9999"
+                      maxLength={16}
+                      inputMode="tel"
+                    />
                   </div>
                   <Button onClick={handleSaveProfile} disabled={savingProfile} className="w-full">
                     {savingProfile ? "Salvando..." : "Salvar"}
