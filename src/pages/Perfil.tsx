@@ -196,56 +196,70 @@ const Perfil = () => {
       <main className="px-5 py-6 space-y-5 max-w-lg mx-auto">
         {/* Profile Card */}
         <Card className="border-border/40">
-          <CardContent className="flex items-center gap-4 py-6">
-            <Avatar className="h-16 w-16 text-lg">
-              <AvatarFallback className="bg-primary/20 text-primary font-bold text-xl">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-lg truncate">{fullName}</p>
-              <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
-              {profile?.phone && (
-                <p className="text-xs text-muted-foreground truncate">{formatPhone(profile.phone)}</p>
-              )}
-            </div>
-            <Dialog open={editProfileOpen} onOpenChange={(o) => {
-              setEditProfileOpen(o);
-              if (o) {
-                setEditName(fullName);
-                setEditPhone(formatPhone(profile?.phone || ""));
-              }
-            }}>
-              <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="shrink-0">
-                  <Pencil className="w-4 h-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Editar Perfil</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 pt-2">
-                  <div className="space-y-2">
-                    <Label>Nome completo</Label>
-                    <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Seu nome" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Telefone</Label>
-                    <Input
-                      value={editPhone}
-                      onChange={(e) => setEditPhone(formatPhone(e.target.value))}
-                      placeholder="(11) 99999-9999"
-                      maxLength={16}
-                      inputMode="tel"
-                    />
-                  </div>
-                  <Button onClick={handleSaveProfile} disabled={savingProfile} className="w-full">
-                    {savingProfile ? "Salvando..." : "Salvar"}
+          <CardContent className="py-6 space-y-5">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16 text-lg">
+                <AvatarFallback className="bg-primary/20 text-primary font-bold text-xl">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-lg truncate">{fullName}</p>
+                <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
+              </div>
+              <Dialog open={editProfileOpen} onOpenChange={(o) => {
+                setEditProfileOpen(o);
+                if (o) {
+                  setEditName(fullName);
+                }
+              }}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="shrink-0">
+                    <Pencil className="w-4 h-4" />
                   </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Editar Perfil</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 pt-2">
+                    <div className="space-y-2">
+                      <Label>Nome completo</Label>
+                      <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Seu nome" />
+                    </div>
+                    <Button onClick={handleSaveProfile} disabled={savingProfile} className="w-full">
+                      {savingProfile ? "Salvando..." : "Salvar"}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="h-px bg-border/50" />
+
+            {/* Phone field — always visible */}
+            <div className="space-y-2">
+              <Label className="text-sm">Telefone</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(formatPhone(e.target.value))}
+                  placeholder="(11) 99999-9999"
+                  maxLength={16}
+                  inputMode="tel"
+                  className="h-9 text-sm"
+                />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="shrink-0 h-9"
+                  disabled={savingPhone}
+                  onClick={handleSavePhone}
+                >
+                  {savingPhone ? "Salvando..." : "Salvar"}
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
