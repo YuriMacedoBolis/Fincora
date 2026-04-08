@@ -57,7 +57,7 @@ const Perfil = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name, display_name, phone, currency, theme")
+        .select("full_name, phone, currency, theme")
         .eq("id", user!.id)
         .single();
       if (error) throw error;
