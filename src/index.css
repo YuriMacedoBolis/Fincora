@@ -54,6 +54,9 @@
     --glass: 217 33% 17% / 0.6;
     --glass-border: 217 33% 30% / 0.3;
   }
+  #lovable-badge { 
+  display: none !important; 
+  }
 }
 
 @layer base {
@@ -72,5 +75,9 @@
     background: hsla(var(--glass));
     backdrop-filter: blur(12px);
     border: 1px solid hsla(var(--glass-border));
+  }
+
+  #lovable-badge { 
+  display: none !important; 
   }
 }
