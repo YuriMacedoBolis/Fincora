@@ -77,6 +77,11 @@ const Perfil = () => {
   const currentCurrency = profile?.currency || "BRL";
   const currentTheme = profile?.theme || "light";
   const darkMode = currentTheme === "dark";
+  // Apply dark class based on profile theme
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", currentTheme === "dark");
+  }, [currentTheme]);
+
   // Initialize editPhone from profile data
   useEffect(() => {
     if (profile?.phone) {
