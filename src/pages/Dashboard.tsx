@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, MessageCircle, User } from "lucide-react";
+import { LogOut, MessageCircle, User, PlusCircle } from "lucide-react";
 import MonthlyReport from "@/components/dashboard/MonthlyReport";
+import AddTransactionModal from "@/components/dashboard/AddTransactionModal";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +27,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [reportOpen, setReportOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -71,10 +73,13 @@ const Dashboard = () => {
           <h1 className="text-lg font-bold truncate">Olá, {firstName} 👋</h1>
         </div>
         <div className="flex items-center gap-2">
-          {/* Report button: hidden on mobile, visible on md+ */}
+          {/* Desktop-only buttons */}
           <div className="hidden md:block">
             <MonthlyReport transactions={transactions} />
           </div>
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setAddOpen(true)} title="Lançamento Manual">
+            <PlusCircle className="w-5 h-5" />
+          </Button>
           <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/perfil")}>
             <User className="w-5 h-5" />
           </Button>
@@ -108,10 +113,13 @@ const Dashboard = () => {
       </button>
 
       {/* Bottom nav: only on mobile */}
-      <BottomNav onReportClick={() => setReportOpen(true)} />
+      <BottomNav onReportClick={() => setReportOpen(true)} onAddClick={() => setAddOpen(true)} />
 
       {/* Report dialog controlled from bottom nav */}
       <MonthlyReport transactions={transactions} open={reportOpen} onOpenChange={setReportOpen} />
+
+      {/* Add transaction modal */}
+      <AddTransactionModal open={addOpen} onOpenChange={setAddOpen} />
     </div>
   );
 };
