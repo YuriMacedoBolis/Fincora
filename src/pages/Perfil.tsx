@@ -131,12 +131,16 @@ const Perfil = () => {
 
   const handleThemeToggle = async (checked: boolean) => {
     const theme = checked ? "dark" : "light";
+    // Apply class immediately
+    document.documentElement.classList.toggle("dark", checked);
     const { error } = await supabase
       .from("profiles")
       .update({ theme })
       .eq("id", user!.id);
     if (error) {
       toast.error("Erro ao salvar tema");
+      // Revert on error
+      document.documentElement.classList.toggle("dark", !checked);
     } else {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     }
