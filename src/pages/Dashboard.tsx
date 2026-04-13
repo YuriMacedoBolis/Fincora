@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, MessageCircle, User, PlusCircle } from "lucide-react";
+import { LogOut, MessageCircle, User, PlusCircle, Eye, EyeOff } from "lucide-react";
+import { usePrivacy } from "@/contexts/PrivacyContext";
 import MonthlyReport from "@/components/dashboard/MonthlyReport";
 import AddTransactionModal from "@/components/dashboard/AddTransactionModal";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ export interface Transaction {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { privacyMode, togglePrivacy } = usePrivacy();
   const [reportOpen, setReportOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
 
@@ -82,6 +84,9 @@ const Dashboard = () => {
           </Button>
           <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/perfil")}>
             <User className="w-5 h-5" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={togglePrivacy} title={privacyMode ? "Mostrar valores" : "Ocultar valores"}>
+            {privacyMode ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </Button>
           <Button variant="ghost" size="icon" onClick={handleLogout}>
             <LogOut className="w-5 h-5" />

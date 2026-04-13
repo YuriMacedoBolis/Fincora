@@ -1,5 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import type { Transaction } from "@/pages/Dashboard";
+import { usePrivacy } from "@/contexts/PrivacyContext";
 
 const COLORS = ["#6366F1", "#10B981", "#F97316", "#EF4444", "#8B5CF6", "#EC4899"];
 
@@ -8,6 +9,7 @@ interface ExpenseChartProps {
 }
 
 const ExpenseChart = ({ transactions }: ExpenseChartProps) => {
+  const { maskValue } = usePrivacy();
   const expensesByCategory = transactions
     .filter((t) => t.type === "saida")
     .reduce<Record<string, number>>((acc, t) => {
@@ -39,7 +41,7 @@ const ExpenseChart = ({ transactions }: ExpenseChartProps) => {
           </Pie>
           <Tooltip
             formatter={(value: number) =>
-              value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+              maskValue(value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }))
             }
           />
         </PieChart>

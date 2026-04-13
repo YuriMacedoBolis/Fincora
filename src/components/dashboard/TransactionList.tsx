@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import type { Transaction } from "@/pages/Dashboard";
+import { usePrivacy } from "@/contexts/PrivacyContext";
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -36,6 +37,7 @@ const formatBRL = (value: number) =>
 type FilterOption = "all" | 5 | 7 | 10;
 
 const TransactionList = ({ transactions, showFilters = true }: TransactionListProps) => {
+  const { maskValue } = usePrivacy();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [editTx, setEditTx] = useState<Transaction | null>(null);
@@ -158,7 +160,7 @@ const TransactionList = ({ transactions, showFilters = true }: TransactionListPr
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`text-sm font-semibold whitespace-nowrap ${isIncome ? "text-emerald-500" : "text-orange-500"}`}>
-                      {isIncome ? "+" : "-"}{formatBRL(Math.abs(t.amount))}
+                      {isIncome ? "+" : "-"}{maskValue(formatBRL(Math.abs(t.amount)))}
                     </span>
                     <button onClick={() => openEdit(t)} className="p-1 rounded-lg hover:bg-secondary transition-colors">
                       <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
