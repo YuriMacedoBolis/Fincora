@@ -17,7 +17,7 @@ const WEBHOOK_URL = "https://en8n.mibagencia.com.br/webhook/fincora-chat";
 
 const defaultMessage: Message = {
   id: 0,
-  text: "Olá! Sou o Assistente Fincora. Como posso ajudar com suas finanças hoje?",
+  text: "Olá! Sou o Assistente FinCare. Como posso ajudar com suas finanças hoje?",
   sender: "bot",
 };
 
@@ -25,7 +25,7 @@ const Chat = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const storageKey = user ? `fincora-chat-messages-${user.id}` : null;
+  const storageKey = user ? `fincare-chat-messages-${user.id}` : null;
   const [messages, setMessages] = useState<Message[]>(() => {
     if (!storageKey) return [defaultMessage];
     try {
@@ -121,7 +121,7 @@ const Chat = () => {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div className="flex-1">
-          <p className="text-sm font-semibold">Assistente Fincora</p>
+          <p className="text-sm font-semibold">Assistente FinCare</p>
           <p className="text-xs text-muted-foreground">Online</p>
         </div>
         <Button variant="ghost" size="icon" onClick={clearChat} title="Limpar conversa">

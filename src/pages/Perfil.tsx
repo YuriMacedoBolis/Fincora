@@ -472,7 +472,7 @@ const Perfil = () => {
         </Card>
 
         {/* Footer */}
-        <p className="text-center text-xs text-muted-foreground/50 pt-4">Fincora v1.0.0</p>
+        <p className="text-center text-xs text-muted-foreground/50 pt-4">FinCare v1.0.0</p>
       </main>
     </div>
   );
