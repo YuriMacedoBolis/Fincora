@@ -120,7 +120,7 @@ const Chat = () => {
         ...prev,
         {
           id: Date.now() + 1,
-          text: "Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.",
+          text: "Nosso agente está descansando. 😴 Por favor, adicione sua transação manualmente através do botão \"+\" no seu dashboard ou espere alguns instantes. 🧡",
           sender: "bot",
           isError: true,
         },
