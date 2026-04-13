@@ -90,15 +90,31 @@ const Chat = () => {
 
       if (!res.ok) throw new Error(`Erro ${res.status}`);
 
-      const data = await res.json();
+      const raw = await res.text();
+      let replyText = raw;
+      let isTransaction = false;
+
+      try {
+        const data = JSON.parse(raw);
+        if (data && typeof data === "object") {
+          replyText = data.reply ?? raw;
+          isTransaction = !!data.is_transaction;
+        }
+      } catch {
+        // plain text response – use as-is
+      }
+
       const botMsg: Message = {
         id: Date.now() + 1,
-        text: data.reply ?? "Resposta recebida sem conteúdo.",
+        text: replyText || "Resposta recebida sem conteúdo.",
         sender: "bot",
       };
       setMessages((prev) => [...prev, botMsg]);
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
+
+      if (isTransaction) {
+        queryClient.invalidateQueries({ queryKey: ["transactions"] });
+        queryClient.invalidateQueries({ queryKey: ["goals"] });
+      }
     } catch {
       setMessages((prev) => [
         ...prev,
