@@ -1,4 +1,5 @@
 import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
+import { usePrivacy } from "@/contexts/PrivacyContext";
 
 interface SummaryCardsProps {
   income: number;
@@ -10,10 +11,11 @@ const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const SummaryCards = ({ income, expenses, balance }: SummaryCardsProps) => {
+  const { maskValue } = usePrivacy();
   const cards = [
-    { title: "Receitas", value: formatBRL(income), icon: TrendingUp, colorClass: "text-success", bgClass: "bg-success/10" },
-    { title: "Despesas", value: formatBRL(expenses), icon: TrendingDown, colorClass: "text-warning", bgClass: "bg-warning/10" },
-    { title: "Saldo do Mês", value: formatBRL(balance), icon: Wallet, colorClass: "text-primary", bgClass: "bg-primary/10" },
+    { title: "Receitas", value: maskValue(formatBRL(income)), icon: TrendingUp, colorClass: "text-success", bgClass: "bg-success/10" },
+    { title: "Despesas", value: maskValue(formatBRL(expenses)), icon: TrendingDown, colorClass: "text-warning", bgClass: "bg-warning/10" },
+    { title: "Saldo do Mês", value: maskValue(formatBRL(balance)), icon: Wallet, colorClass: "text-primary", bgClass: "bg-primary/10" },
   ];
 
   return (

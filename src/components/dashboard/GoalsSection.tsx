@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-
+import { usePrivacy } from "@/contexts/PrivacyContext";
 
 
 const CATEGORIES = [
@@ -50,6 +50,7 @@ const formatBRL = (value: number) =>
 
 const GoalsSection = () => {
   const { user } = useAuth();
+  const { maskValue } = usePrivacy();
   const queryClient = useQueryClient();
 
   // Create state
@@ -205,7 +206,7 @@ const GoalsSection = () => {
                     <span className="font-medium">{goal.category}</span>
                     <div className="flex items-center gap-2">
                       <span className={reached ? "text-emerald-500 font-semibold" : "text-muted-foreground"}>
-                        {formatBRL(current)} / {formatBRL(goal.monthly_limit)}
+                        {maskValue(formatBRL(current))} / {maskValue(formatBRL(goal.monthly_limit))}
                       </span>
                       <button onClick={() => openEdit(goal)} className="p-1 rounded-lg hover:bg-secondary transition-colors">
                         <Pencil className="w-3.5 h-3.5 text-muted-foreground" />

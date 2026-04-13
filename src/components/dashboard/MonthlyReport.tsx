@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { Transaction } from "@/pages/Dashboard";
+import { usePrivacy } from "@/contexts/PrivacyContext";
 
 interface MonthlyReportProps {
   transactions: Transaction[];
@@ -18,6 +19,7 @@ const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: MonthlyReportProps & { open?: boolean; onOpenChange?: (v: boolean) => void }) => {
+  const { maskValue } = usePrivacy();
   const [internalOpen, setInternalOpen] = useState(false);
   const isOpen = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
@@ -71,7 +73,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 <span className="text-xs font-medium">Entradas</span>
               </div>
               <p className="text-lg font-bold text-emerald-500">
-                {formatBRL(income)}
+                {maskValue(formatBRL(income))}
               </p>
             </div>
 
@@ -81,7 +83,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 <span className="text-xs font-medium">Saídas</span>
               </div>
               <p className="text-lg font-bold text-orange-500">
-                {formatBRL(expenses)}
+                {maskValue(formatBRL(expenses))}
               </p>
             </div>
 
@@ -91,7 +93,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 <span className="text-xs font-medium">Saldo Final</span>
               </div>
               <p className="text-lg font-bold text-primary">
-                {formatBRL(balance)}
+                {maskValue(formatBRL(balance))}
               </p>
             </div>
 
@@ -104,7 +106,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
                 {topCategory.name}
               </p>
               <p className="text-xs text-muted-foreground">
-                {formatBRL(topCategory.value)}
+                {maskValue(formatBRL(topCategory.value))}
               </p>
             </div>
           </div>
