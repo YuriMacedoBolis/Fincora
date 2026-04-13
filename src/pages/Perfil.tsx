@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -32,6 +33,7 @@ const sanitizePhone = (value: string): string => value.replace(/\D/g, "");
 const Perfil = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const queryClient = useQueryClient();
 
   const [editProfileOpen, setEditProfileOpen] = useState(false);
@@ -75,12 +77,7 @@ const Perfil = () => {
     .toUpperCase();
 
   const currentCurrency = profile?.currency || "BRL";
-  const currentTheme = profile?.theme || "light";
-  const darkMode = currentTheme === "dark";
-  // Apply dark class based on profile theme
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", currentTheme === "dark");
-  }, [currentTheme]);
+  const darkMode = theme === "dark";
 
   // Initialize editPhone from profile data
   useEffect(() => {
@@ -134,21 +131,8 @@ const Perfil = () => {
     }
   };
 
-  const handleThemeToggle = async (checked: boolean) => {
-    const theme = checked ? "dark" : "light";
-    // Apply class immediately
-    document.documentElement.classList.toggle("dark", checked);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ theme })
-      .eq("id", user!.id);
-    if (error) {
-      toast.error("Erro ao salvar tema");
-      // Revert on error
-      document.documentElement.classList.toggle("dark", !checked);
-    } else {
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-    }
+  const handleThemeToggle = () => {
+    toggleTheme();
   };
 
   const handleChangePassword = async () => {
