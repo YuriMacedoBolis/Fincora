@@ -77,6 +77,11 @@ const Perfil = () => {
   const currentCurrency = profile?.currency || "BRL";
   const currentTheme = profile?.theme || "light";
   const darkMode = currentTheme === "dark";
+  // Apply dark class based on profile theme
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", currentTheme === "dark");
+  }, [currentTheme]);
+
   // Initialize editPhone from profile data
   useEffect(() => {
     if (profile?.phone) {
@@ -131,12 +136,16 @@ const Perfil = () => {
 
   const handleThemeToggle = async (checked: boolean) => {
     const theme = checked ? "dark" : "light";
+    // Apply class immediately
+    document.documentElement.classList.toggle("dark", checked);
     const { error } = await supabase
       .from("profiles")
       .update({ theme })
       .eq("id", user!.id);
     if (error) {
       toast.error("Erro ao salvar tema");
+      // Revert on error
+      document.documentElement.classList.toggle("dark", !checked);
     } else {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     }
