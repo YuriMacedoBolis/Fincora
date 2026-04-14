@@ -49,9 +49,14 @@ const Dashboard = () => {
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ["transactions", user?.id],
     queryFn: async () => {
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
       const { data, error } = await supabase
         .from("transactions")
         .select("*")
+        .gte("created_at", startOfMonth)
+        .lte("created_at", endOfMonth)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as Transaction[];
