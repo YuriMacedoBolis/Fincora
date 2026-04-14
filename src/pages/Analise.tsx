@@ -294,7 +294,7 @@ const Analise = () => {
         </div>
       </main>
 
-      <BottomNav onReportClick={() => {}} onAddClick={() => {}} />
+      <BottomNav />
     </div>
   );
 };
