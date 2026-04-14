@@ -138,17 +138,37 @@ const Perfil = () => {
   };
 
   const handleChangePassword = async () => {
+    if (!currentPassword) {
+      toast.error("Informe sua senha atual");
+      return;
+    }
     if (newPassword.length < 6) {
-      toast.error("A senha deve ter pelo menos 6 caracteres");
+      toast.error("A nova senha deve ter pelo menos 6 caracteres");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("As senhas não coincidem");
       return;
     }
     setSavingPass(true);
+    // Re-authenticate with current password
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user!.email!,
+      password: currentPassword,
+    });
+    if (signInError) {
+      toast.error("Senha atual incorreta");
+      setSavingPass(false);
+      return;
+    }
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) {
       toast.error(error.message);
     } else {
       toast.success("Senha alterada com sucesso!");
+      setCurrentPassword("");
       setNewPassword("");
+      setConfirmPassword("");
       setChangePassOpen(false);
     }
     setSavingPass(false);
