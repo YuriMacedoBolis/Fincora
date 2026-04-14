@@ -46,7 +46,9 @@ const Perfil = () => {
 
   // Change password state
   const [changePassOpen, setChangePassOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [savingPass, setSavingPass] = useState(false);
 
   // Change email state
@@ -136,17 +138,37 @@ const Perfil = () => {
   };
 
   const handleChangePassword = async () => {
+    if (!currentPassword) {
+      toast.error("Informe sua senha atual");
+      return;
+    }
     if (newPassword.length < 6) {
-      toast.error("A senha deve ter pelo menos 6 caracteres");
+      toast.error("A nova senha deve ter pelo menos 6 caracteres");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("As senhas não coincidem");
       return;
     }
     setSavingPass(true);
+    // Re-authenticate with current password
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user!.email!,
+      password: currentPassword,
+    });
+    if (signInError) {
+      toast.error("Senha atual incorreta");
+      setSavingPass(false);
+      return;
+    }
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) {
       toast.error(error.message);
     } else {
       toast.success("Senha alterada com sucesso!");
+      setCurrentPassword("");
       setNewPassword("");
+      setConfirmPassword("");
       setChangePassOpen(false);
     }
     setSavingPass(false);
@@ -316,8 +338,16 @@ const Perfil = () => {
                 <DialogHeader><DialogTitle>Alterar Senha</DialogTitle></DialogHeader>
                 <div className="space-y-4 pt-2">
                   <div className="space-y-2">
+                    <Label>Senha atual</Label>
+                    <Input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="••••••••" />
+                  </div>
+                  <div className="space-y-2">
                     <Label>Nova senha</Label>
                     <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="••••••••" minLength={6} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Confirmar nova senha</Label>
+                    <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" />
                   </div>
                   <Button onClick={handleChangePassword} disabled={savingPass} className="w-full">
                     {savingPass ? "Salvando..." : "Alterar Senha"}
