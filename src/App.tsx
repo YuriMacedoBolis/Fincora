@@ -13,6 +13,7 @@ import Chat from "./pages/Chat.tsx";
 import Historico from "./pages/Historico.tsx";
 import Perfil from "./pages/Perfil.tsx";
 import Analise from "./pages/Analise.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
               <Route path="/historico" element={<ProtectedRoute><Historico /></ProtectedRoute>} />

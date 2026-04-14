@@ -7,11 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 
+type FormMode = "login" | "signup" | "forgot";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [mode, setMode] = useState<FormMode>("login");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -20,7 +22,20 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    if (isSignUp) {
+    if (mode === "forgot") {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Link de recuperação enviado para o seu e-mail!");
+      }
+      setLoading(false);
+      return;
+    }
+
+    if (mode === "signup") {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -52,11 +67,15 @@ const Login = () => {
       <div className="glass w-full max-w-sm rounded-2xl p-8 space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold tracking-tight text-primary">FinCare</h1>
-          <p className="text-muted-foreground text-sm">Gerencie suas finanças com inteligência</p>
+          <p className="text-muted-foreground text-sm">
+            {mode === "forgot"
+              ? "Recupere o acesso à sua conta"
+              : "Gerencie suas finanças com inteligência"}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {isSignUp && (
+          {mode === "signup" && (
             <div className="space-y-2">
               <Label htmlFor="fullName">Nome</Label>
               <Input
@@ -82,43 +101,87 @@ const Login = () => {
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Senha</Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="rounded-xl bg-secondary border-border pr-10"
-                required
-                minLength={6}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+          {mode !== "forgot" && (
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="rounded-xl bg-secondary border-border pr-10"
+                  required
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
           <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
-            {loading ? "Carregando..." : isSignUp ? "Criar Conta" : "Entrar"}
+            {loading
+              ? "Carregando..."
+              : mode === "forgot"
+              ? "Enviar Link de Recuperação"
+              : mode === "signup"
+              ? "Criar Conta"
+              : "Entrar"}
           </Button>
         </form>
 
-        <p className="text-center text-sm text-muted-foreground">
-          {isSignUp ? "Já tem conta?" : "Não tem conta?"}{" "}
-          <button
-            type="button"
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="text-primary font-medium hover:underline"
-          >
-            {isSignUp ? "Entrar" : "Criar conta"}
-          </button>
-        </p>
+        {mode === "login" && (
+          <div className="text-center space-y-3">
+            <button
+              type="button"
+              onClick={() => setMode("forgot")}
+              className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors"
+            >
+              Esqueci minha senha
+            </button>
+            <p className="text-sm text-muted-foreground">
+              Não tem conta?{" "}
+              <button
+                type="button"
+                onClick={() => setMode("signup")}
+                className="text-primary font-medium hover:underline"
+              >
+                Criar conta
+              </button>
+            </p>
+          </div>
+        )}
+
+        {mode === "signup" && (
+          <p className="text-center text-sm text-muted-foreground">
+            Já tem conta?{" "}
+            <button
+              type="button"
+              onClick={() => setMode("login")}
+              className="text-primary font-medium hover:underline"
+            >
+              Entrar
+            </button>
+          </p>
+        )}
+
+        {mode === "forgot" && (
+          <p className="text-center text-sm text-muted-foreground">
+            <button
+              type="button"
+              onClick={() => setMode("login")}
+              className="text-primary font-medium hover:underline"
+            >
+              Voltar para o Login
+            </button>
+          </p>
+        )}
       </div>
     </div>
   );
