@@ -14,6 +14,7 @@ import ExpenseChart from "@/components/dashboard/ExpenseChart";
 import IncomeChart from "@/components/dashboard/IncomeChart";
 import TransactionList from "@/components/dashboard/TransactionList";
 import GoalsSection from "@/components/dashboard/GoalsSection";
+import FinancialEvolutionChart from "@/components/dashboard/FinancialEvolutionChart";
 import BottomNav from "@/components/dashboard/BottomNav";
 
 export interface Transaction {
