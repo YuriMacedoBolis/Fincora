@@ -33,7 +33,7 @@ const ResetPassword = () => {
     setLoading(false);
   };
 
-  if (!isRecovery) {
+  if (!isPasswordRecovery && !session) {
     return (
       <div className="flex min-h-screen items-center justify-center px-6">
         <div className="glass w-full max-w-sm rounded-2xl p-8 space-y-6 text-center">
