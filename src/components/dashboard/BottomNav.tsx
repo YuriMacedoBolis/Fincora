@@ -1,29 +1,49 @@
 import { useState } from "react";
 import { FileText, MessageCircle, User, PlusCircle, BarChart3 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import AddTransactionModal from "@/components/dashboard/AddTransactionModal";
+import MonthlyReport from "@/components/dashboard/MonthlyReport";
+import type { Transaction } from "@/pages/Dashboard";
 
 const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const [addOpen, setAddOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
-  const isActive = (path: string) => location.pathname === path || (path === "/dashboard" && location.pathname === "/");
+  const isActive = (path: string) => location.pathname === path;
+
+  const { data: transactions = [] } = useQuery({
+    queryKey: ["transactions", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("transactions")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as Transaction[];
+    },
+    enabled: !!user,
+  });
 
   return (
     <>
       <nav className="fixed bottom-0 left-0 w-full z-50 md:hidden">
         <div className="glass border-t border-border/40 px-4 py-2 flex items-end justify-between">
-          {/* Relatório → go to dashboard */}
+          {/* Relatório */}
           <button
-            onClick={() => navigate("/dashboard")}
-            className={`flex flex-col items-center gap-1 py-2 px-3 transition-colors ${isActive("/dashboard") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+            onClick={() => setReportOpen(true)}
+            className="flex flex-col items-center gap-1 py-2 px-3 text-muted-foreground hover:text-foreground transition-colors"
           >
             <FileText className="w-5 h-5" />
-            <span className="text-[10px] font-medium">Início</span>
+            <span className="text-[10px] font-medium">Relatório</span>
           </button>
 
-          {/* Add */}
+          {/* Adicionar */}
           <button
             onClick={() => setAddOpen(true)}
             className="flex flex-col items-center gap-1 py-2 px-3 text-muted-foreground hover:text-foreground transition-colors"
@@ -49,7 +69,7 @@ const BottomNav = () => {
             <span className="text-[10px] font-medium">Análise</span>
           </button>
 
-          {/* Profile */}
+          {/* Perfil */}
           <button
             onClick={() => navigate("/perfil")}
             className={`flex flex-col items-center gap-1 py-2 px-3 transition-colors ${isActive("/perfil") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
@@ -60,7 +80,7 @@ const BottomNav = () => {
         </div>
       </nav>
 
-      {/* Self-contained Add Transaction Modal */}
+      <MonthlyReport transactions={transactions} open={reportOpen} onOpenChange={setReportOpen} />
       <AddTransactionModal open={addOpen} onOpenChange={setAddOpen} />
     </>
   );
