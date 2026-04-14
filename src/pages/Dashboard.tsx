@@ -124,7 +124,7 @@ const Dashboard = () => {
       </button>
 
       {/* Bottom nav: only on mobile */}
-      <BottomNav onReportClick={() => setReportOpen(true)} onAddClick={() => setAddOpen(true)} />
+      <BottomNav />
 
       {/* Report dialog controlled from bottom nav */}
       <MonthlyReport transactions={transactions} open={reportOpen} onOpenChange={setReportOpen} />
