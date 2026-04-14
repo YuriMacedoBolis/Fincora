@@ -46,7 +46,9 @@ const Perfil = () => {
 
   // Change password state
   const [changePassOpen, setChangePassOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [savingPass, setSavingPass] = useState(false);
 
   // Change email state
