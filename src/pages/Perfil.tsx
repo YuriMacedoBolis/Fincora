@@ -338,8 +338,16 @@ const Perfil = () => {
                 <DialogHeader><DialogTitle>Alterar Senha</DialogTitle></DialogHeader>
                 <div className="space-y-4 pt-2">
                   <div className="space-y-2">
+                    <Label>Senha atual</Label>
+                    <Input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="••••••••" />
+                  </div>
+                  <div className="space-y-2">
                     <Label>Nova senha</Label>
                     <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="••••••••" minLength={6} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Confirmar nova senha</Label>
+                    <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" />
                   </div>
                   <Button onClick={handleChangePassword} disabled={savingPass} className="w-full">
                     {savingPass ? "Salvando..." : "Alterar Senha"}
