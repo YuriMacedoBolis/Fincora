@@ -1,4 +1,4 @@
-import { FileText, MessageCircle, User, PlusCircle } from "lucide-react";
+import { FileText, MessageCircle, User, PlusCircle, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface BottomNavProps {
@@ -38,6 +38,15 @@ const BottomNav = ({ onReportClick, onAddClick }: BottomNavProps) => {
           <MessageCircle className="w-6 h-6" />
         </button>
 
+        {/* Análise */}
+        <button
+          onClick={() => navigate("/analise")}
+          className="flex flex-col items-center gap-1 py-2 px-3 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <BarChart3 className="w-5 h-5" />
+          <span className="text-[10px] font-medium">Análise</span>
+        </button>
+
         {/* Profile */}
         <button
           onClick={() => navigate("/perfil")}
@@ -46,9 +55,6 @@ const BottomNav = ({ onReportClick, onAddClick }: BottomNavProps) => {
           <User className="w-5 h-5" />
           <span className="text-[10px] font-medium">Perfil</span>
         </button>
-
-        {/* Placeholder for symmetry */}
-        <div className="w-[52px]" />
       </div>
     </nav>
   );
