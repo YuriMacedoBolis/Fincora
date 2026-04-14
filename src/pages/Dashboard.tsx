@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, MessageCircle, User, PlusCircle, Eye, EyeOff } from "lucide-react";
+import { LogOut, MessageCircle, User, PlusCircle, Eye, EyeOff, BarChart3 } from "lucide-react";
 import { usePrivacy } from "@/contexts/PrivacyContext";
 import MonthlyReport from "@/components/dashboard/MonthlyReport";
 import AddTransactionModal from "@/components/dashboard/AddTransactionModal";
@@ -14,7 +14,6 @@ import ExpenseChart from "@/components/dashboard/ExpenseChart";
 import IncomeChart from "@/components/dashboard/IncomeChart";
 import TransactionList from "@/components/dashboard/TransactionList";
 import GoalsSection from "@/components/dashboard/GoalsSection";
-import FinancialEvolutionChart from "@/components/dashboard/FinancialEvolutionChart";
 import BottomNav from "@/components/dashboard/BottomNav";
 
 export interface Transaction {
@@ -84,6 +83,9 @@ const Dashboard = () => {
           <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setAddOpen(true)} title="Lançamento Manual">
             <PlusCircle className="w-5 h-5" />
           </Button>
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/analise")} title="Análise">
+            <BarChart3 className="w-5 h-5" />
+          </Button>
           <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/perfil")}>
             <User className="w-5 h-5" />
           </Button>
@@ -106,7 +108,7 @@ const Dashboard = () => {
             <SummaryCards income={income} expenses={expenses} balance={balance} />
             <ExpenseChart transactions={transactions} />
             <IncomeChart transactions={transactions} />
-            <FinancialEvolutionChart transactions={transactions} />
+            
             <TransactionList transactions={transactions.slice(0, 5)} />
             <GoalsSection />
           </>
