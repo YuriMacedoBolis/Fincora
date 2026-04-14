@@ -8,7 +8,7 @@ const BottomNav = () => {
   const location = useLocation();
   const [addOpen, setAddOpen] = useState(false);
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path || (path === "/dashboard" && location.pathname === "/");
 
   return (
     <>
@@ -16,8 +16,8 @@ const BottomNav = () => {
         <div className="glass border-t border-border/40 px-4 py-2 flex items-end justify-between">
           {/* Relatório → go to dashboard */}
           <button
-            onClick={() => navigate("/")}
-            className={`flex flex-col items-center gap-1 py-2 px-3 transition-colors ${isActive("/") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+            onClick={() => navigate("/dashboard")}
+            className={`flex flex-col items-center gap-1 py-2 px-3 transition-colors ${isActive("/dashboard") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
           >
             <FileText className="w-5 h-5" />
             <span className="text-[10px] font-medium">Início</span>
