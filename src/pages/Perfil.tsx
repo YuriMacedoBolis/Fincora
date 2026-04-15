@@ -39,8 +39,9 @@ const Perfil = () => {
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
-  const [categories, setCategories] = useState(CATEGORIES_DEFAULT);
+  const [customCategories, setCustomCategories] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState("");
+  const [savingCategory, setSavingCategory] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPhone, setSavingPhone] = useState(false);
 
