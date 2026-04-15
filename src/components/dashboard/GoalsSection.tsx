@@ -108,16 +108,36 @@ const GoalsSection = () => {
 
   const createGoal = useMutation({
     mutationFn: async () => {
+      const trimmed = goalName.trim();
+      if (!trimmed) throw new Error("Nome da meta é obrigatório");
+
+      // Step A: Auto-create category if it doesn't exist
+      const { data: existing } = await supabase
+        .from("categories")
+        .select("id")
+        .eq("user_id", user!.id)
+        .ilike("name", trimmed)
+        .maybeSingle();
+
+      if (!existing) {
+        const { error: catError } = await supabase
+          .from("categories")
+          .insert({ user_id: user!.id, name: trimmed });
+        if (catError) throw catError;
+      }
+
+      // Step B: Create the goal
       const { error } = await supabase.from("goals").insert({
-        category,
+        category: trimmed,
         monthly_limit: parseFloat(monthlyLimit),
       });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["goals"] });
-      toast.success("Meta criada!");
-      setCategory("");
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success("Meta criada com sucesso!");
+      setGoalName("");
       setMonthlyLimit("");
       setOpen(false);
     },
