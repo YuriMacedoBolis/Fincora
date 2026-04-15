@@ -205,17 +205,14 @@ const GoalsSection = () => {
                 className="space-y-4"
               >
                 <div className="space-y-2">
-                  <Label>Categoria</Label>
-                  <Select value={category} onValueChange={setCategory} required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma categoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {allCategories.map((c) => (
-                        <SelectItem key={c} value={c}>{c}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label>Nome da Meta</Label>
+                  <Input
+                    type="text"
+                    placeholder="Ex: Reserva de Emergência"
+                    value={goalName}
+                    onChange={(e) => setGoalName(e.target.value)}
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Limite Mensal (R$)</Label>
