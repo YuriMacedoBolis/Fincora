@@ -25,6 +25,17 @@ const AddTransactionModal = ({ open, onOpenChange }: AddTransactionModalProps) =
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
+  const { data: customCats = [] } = useQuery({
+    queryKey: ["categories", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("categories").select("name").eq("user_id", user!.id);
+      if (error) throw error;
+      return data.map((c) => c.name);
+    },
+    enabled: !!user,
+  });
+  const allCategories = [...CATEGORIES_DEFAULT, ...customCats];
+
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -137,7 +148,7 @@ const AddTransactionModal = ({ open, onOpenChange }: AddTransactionModalProps) =
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
-                {CATEGORIES.map((cat) => (
+                {allCategories.map((cat) => (
                   <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                 ))}
               </SelectContent>
