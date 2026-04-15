@@ -11,10 +11,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-const CATEGORIES = ["Alimentação", "Lazer", "Transporte", "Saúde", "Educação", "Moradia"];
+const CATEGORIES_DEFAULT = ["Alimentação", "Transporte", "Moradia", "Lazer", "Saúde", "Educação", "Compras", "Assinaturas", "Investimentos", "Quitação de Dívidas", "Salário", "Freelance", "Rendimentos", "Outros"];
 
 interface AddTransactionModalProps {
   open: boolean;
