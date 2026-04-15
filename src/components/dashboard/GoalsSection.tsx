@@ -83,9 +83,8 @@ const GoalsSection = () => {
 
   // Create state
   const [open, setOpen] = useState(false);
-  const [category, setCategory] = useState("");
+  const [goalName, setGoalName] = useState("");
   const [monthlyLimit, setMonthlyLimit] = useState("");
-
   // Edit state
   const [editGoal, setEditGoal] = useState<{ id: string; category: string; monthly_limit: number } | null>(null);
   const [editCategory, setEditCategory] = useState("");
