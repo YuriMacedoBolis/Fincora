@@ -90,14 +90,18 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
     if (!reportRef.current) return;
     setExporting(true);
     const element = reportRef.current;
-    const originalWidth = element.style.width;
-    const originalMaxWidth = element.style.maxWidth;
+    const origWidth = element.style.width;
+    const origMaxWidth = element.style.maxWidth;
+    const origMinHeight = element.style.minHeight;
+    const origPadding = element.style.padding;
     try {
       const html2canvas = (await import("html2canvas")).default;
       const { jsPDF } = await import("jspdf");
 
       element.style.width = "800px";
       element.style.maxWidth = "none";
+      element.style.minHeight = "1131px";
+      element.style.padding = "40px";
 
       const canvas = await html2canvas(element, {
         backgroundColor: "#05120D",
@@ -110,14 +114,22 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfW = pdf.internal.pageSize.getWidth();
-      const pdfH = (canvas.height * pdfW) / canvas.width;
-      pdf.addImage(imgData, "PNG", 0, 0, pdfW, pdfH);
+      const pdfH = pdf.internal.pageSize.getHeight();
+
+      // Fill entire A4 with dark background
+      pdf.setFillColor("#05120D");
+      pdf.rect(0, 0, pdfW, pdfH, "F");
+
+      const imgH = (canvas.height * pdfW) / canvas.width;
+      pdf.addImage(imgData, "PNG", 0, 0, pdfW, imgH);
       pdf.save("Relatorio-FinCare.pdf");
     } catch (e) {
       console.error("PDF export failed", e);
     } finally {
-      element.style.width = originalWidth;
-      element.style.maxWidth = originalMaxWidth;
+      element.style.width = origWidth;
+      element.style.maxWidth = origMaxWidth;
+      element.style.minHeight = origMinHeight;
+      element.style.padding = origPadding;
       setExporting(false);
     }
   };
