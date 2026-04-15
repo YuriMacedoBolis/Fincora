@@ -36,13 +36,20 @@ import { usePrivacy } from "@/contexts/PrivacyContext";
 
 
 const CATEGORIES = [
-  "Reserva de Emergência",
-  "Viagem",
+  "Alimentação",
+  "Transporte",
+  "Moradia",
+  "Lazer",
+  "Saúde",
   "Educação",
-  "Veículo",
-  "Imóvel",
+  "Compras",
+  "Assinaturas",
   "Investimentos",
   "Quitação de Dívidas",
+  "Salário",
+  "Freelance",
+  "Rendimentos",
+  "Outros",
 ];
 
 const formatBRL = (value: number) =>
