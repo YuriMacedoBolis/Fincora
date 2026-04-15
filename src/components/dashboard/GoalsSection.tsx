@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -59,6 +59,27 @@ const GoalsSection = () => {
   const { user } = useAuth();
   const { maskValue } = usePrivacy();
   const queryClient = useQueryClient();
+
+  // Fetch custom categories
+  const { data: customCatsData = [] } = useQuery({
+    queryKey: ["categories", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("name")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return data.map((c) => c.name);
+    },
+    enabled: !!user,
+  });
+
+  const allCategories = useMemo(() => {
+    const custom = customCatsData.filter(
+      (c) => !CATEGORIES.some((d) => d.toLowerCase() === c.toLowerCase())
+    );
+    return [...CATEGORIES, ...custom];
+  }, [customCatsData]);
 
   // Create state
   const [open, setOpen] = useState(false);
@@ -171,7 +192,7 @@ const GoalsSection = () => {
                       <SelectValue placeholder="Selecione uma categoria" />
                     </SelectTrigger>
                     <SelectContent>
-                      {CATEGORIES.map((c) => (
+                      {allCategories.map((c) => (
                         <SelectItem key={c} value={c}>{c}</SelectItem>
                       ))}
                     </SelectContent>
@@ -248,7 +269,7 @@ const GoalsSection = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {CATEGORIES.map((c) => (
+                  {allCategories.map((c) => (
                     <SelectItem key={c} value={c}>{c}</SelectItem>
                   ))}
                 </SelectContent>
