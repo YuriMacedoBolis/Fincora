@@ -89,14 +89,22 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
   const handleExportPDF = async () => {
     if (!reportRef.current) return;
     setExporting(true);
+    const element = reportRef.current;
+    const originalWidth = element.style.width;
+    const originalMaxWidth = element.style.maxWidth;
     try {
       const html2canvas = (await import("html2canvas")).default;
       const { jsPDF } = await import("jspdf");
 
-      const canvas = await html2canvas(reportRef.current, {
+      element.style.width = "800px";
+      element.style.maxWidth = "none";
+
+      const canvas = await html2canvas(element, {
         backgroundColor: "#05120D",
         scale: 2,
         useCORS: true,
+        windowWidth: 800,
+        width: 800,
       });
 
       const imgData = canvas.toDataURL("image/png");
@@ -108,6 +116,8 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
     } catch (e) {
       console.error("PDF export failed", e);
     } finally {
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
       setExporting(false);
     }
   };
@@ -122,7 +132,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
       )}
 
       <Dialog open={isOpen} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl p-0 border-0 bg-transparent overflow-y-auto max-h-[90vh] [&>button]:hidden">
+        <DialogContent className="max-w-2xl p-0 border-0 bg-transparent overflow-y-auto max-h-[90vh] [&>button]:hidden w-[95vw]">
           {/* Header bar outside the PDF area */}
           <div className="flex items-center justify-between px-5 pt-5 pb-2 rounded-t-xl" style={{ background: "#05120D" }}>
             <h2 className="text-lg font-bold capitalize" style={{ color: "#F5EBE1" }}>
@@ -156,7 +166,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
               <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#8CC850" }}>
                 Visão Geral
               </p>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Entradas */}
                 <div className="rounded-xl p-4 space-y-1 border" style={{ background: "#0A1F17", borderColor: "#1a3a2a" }}>
                   <div className="flex items-center gap-2" style={{ color: "#8CC850" }}>
@@ -204,7 +214,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
               <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#8CC850" }}>
                 Inteligência Financeira
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* Comparativo Mensal */}
                 <div className="rounded-xl p-4 border space-y-2" style={{ background: "#0A1F17", borderColor: "#1a3a2a" }}>
                   <div className="flex items-center gap-2" style={{ color: "#FF6400" }}>
