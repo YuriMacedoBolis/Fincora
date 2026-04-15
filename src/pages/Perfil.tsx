@@ -17,7 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-const CATEGORIES_DEFAULT = ["Alimentação", "Lazer", "Transporte", "Saúde", "Educação", "Moradia"];
+const CATEGORIES_DEFAULT = ["Alimentação", "Transporte", "Moradia", "Lazer", "Saúde", "Educação", "Compras", "Assinaturas", "Investimentos", "Quitação de Dívidas", "Salário", "Freelance", "Rendimentos", "Outros"];
 
 /** Aplica máscara (XX) XXXXX-XXXX a uma string de dígitos */
 const formatPhone = (digits: string): string => {
