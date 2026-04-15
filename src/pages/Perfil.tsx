@@ -90,6 +90,7 @@ const Perfil = () => {
   }, [customCatsData]);
 
   const allCategories = [...CATEGORIES_DEFAULT, ...customCategories];
+  const fullName = profile?.full_name || "Usuário";
   const initials = fullName
     .split(" ")
     .map((n) => n[0])
@@ -207,12 +208,30 @@ const Perfil = () => {
     setSavingEmail(false);
   };
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     const cat = newCategory.trim();
-    if (cat && !categories.includes(cat)) {
-      setCategories([...categories, cat]);
-      setNewCategory("");
+    if (!cat) {
+      toast.error("Digite o nome da categoria.");
+      return;
     }
+    if (allCategories.some((c) => c.toLowerCase() === cat.toLowerCase())) {
+      toast.error("Essa categoria já existe.");
+      return;
+    }
+    setSavingCategory(true);
+    const { error } = await supabase.from("categories").insert({
+      user_id: user!.id,
+      name: cat,
+    });
+    if (error) {
+      toast.error("Erro ao adicionar categoria.");
+    } else {
+      setCustomCategories((prev) => [...prev, cat]);
+      setNewCategory("");
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success("Categoria adicionada!");
+    }
+    setSavingCategory(false);
   };
 
   const handleLogout = async () => {
@@ -415,7 +434,7 @@ const Perfil = () => {
             <div className="space-y-3">
               <span className="text-sm font-medium">Categorias de Transação</span>
               <div className="flex flex-wrap gap-2">
-                {categories.map((cat) => (
+                {allCategories.map((cat) => (
                   <Badge key={cat} variant="secondary" className="text-xs">
                     {cat}
                   </Badge>
