@@ -17,7 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-const CATEGORIES_DEFAULT = ["Alimentação", "Lazer", "Transporte", "Saúde", "Educação", "Moradia"];
+const CATEGORIES_DEFAULT = ["Alimentação", "Transporte", "Moradia", "Lazer", "Saúde", "Educação", "Compras", "Assinaturas", "Investimentos", "Quitação de Dívidas", "Salário", "Freelance", "Rendimentos", "Outros"];
 
 /** Aplica máscara (XX) XXXXX-XXXX a uma string de dígitos */
 const formatPhone = (digits: string): string => {
@@ -39,8 +39,9 @@ const Perfil = () => {
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
-  const [categories, setCategories] = useState(CATEGORIES_DEFAULT);
+  const [customCategories, setCustomCategories] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState("");
+  const [savingCategory, setSavingCategory] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPhone, setSavingPhone] = useState(false);
 
@@ -70,6 +71,25 @@ const Perfil = () => {
     enabled: !!user,
   });
 
+  // Fetch custom categories from Supabase
+  const { data: customCatsData } = useQuery({
+    queryKey: ["categories", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("name")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return data.map((c) => c.name);
+    },
+    enabled: !!user,
+  });
+
+  useEffect(() => {
+    if (customCatsData) setCustomCategories(customCatsData);
+  }, [customCatsData]);
+
+  const allCategories = [...CATEGORIES_DEFAULT, ...customCategories];
   const fullName = profile?.full_name || "Usuário";
   const initials = fullName
     .split(" ")
@@ -188,12 +208,30 @@ const Perfil = () => {
     setSavingEmail(false);
   };
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     const cat = newCategory.trim();
-    if (cat && !categories.includes(cat)) {
-      setCategories([...categories, cat]);
-      setNewCategory("");
+    if (!cat) {
+      toast.error("Digite o nome da categoria.");
+      return;
     }
+    if (allCategories.some((c) => c.toLowerCase() === cat.toLowerCase())) {
+      toast.error("Essa categoria já existe.");
+      return;
+    }
+    setSavingCategory(true);
+    const { error } = await supabase.from("categories").insert({
+      user_id: user!.id,
+      name: cat,
+    });
+    if (error) {
+      toast.error("Erro ao adicionar categoria.");
+    } else {
+      setCustomCategories((prev) => [...prev, cat]);
+      setNewCategory("");
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success("Categoria adicionada!");
+    }
+    setSavingCategory(false);
   };
 
   const handleLogout = async () => {
@@ -396,7 +434,7 @@ const Perfil = () => {
             <div className="space-y-3">
               <span className="text-sm font-medium">Categorias de Transação</span>
               <div className="flex flex-wrap gap-2">
-                {categories.map((cat) => (
+                {allCategories.map((cat) => (
                   <Badge key={cat} variant="secondary" className="text-xs">
                     {cat}
                   </Badge>

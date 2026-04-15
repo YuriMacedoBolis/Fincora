@@ -11,10 +11,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-const CATEGORIES = ["Alimentação", "Lazer", "Transporte", "Saúde", "Educação", "Moradia"];
+const CATEGORIES_DEFAULT = ["Alimentação", "Transporte", "Moradia", "Lazer", "Saúde", "Educação", "Compras", "Assinaturas", "Investimentos", "Quitação de Dívidas", "Salário", "Freelance", "Rendimentos", "Outros"];
 
 interface AddTransactionModalProps {
   open: boolean;
@@ -24,6 +24,17 @@ interface AddTransactionModalProps {
 const AddTransactionModal = ({ open, onOpenChange }: AddTransactionModalProps) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+
+  const { data: customCats = [] } = useQuery({
+    queryKey: ["categories", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("categories").select("name").eq("user_id", user!.id);
+      if (error) throw error;
+      return data.map((c) => c.name);
+    },
+    enabled: !!user,
+  });
+  const allCategories = [...CATEGORIES_DEFAULT, ...customCats];
 
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -137,7 +148,7 @@ const AddTransactionModal = ({ open, onOpenChange }: AddTransactionModalProps) =
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
-                {CATEGORIES.map((cat) => (
+                {allCategories.map((cat) => (
                   <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                 ))}
               </SelectContent>
