@@ -71,7 +71,25 @@ const Perfil = () => {
     enabled: !!user,
   });
 
-  const fullName = profile?.full_name || "Usuário";
+  // Fetch custom categories from Supabase
+  const { data: customCatsData } = useQuery({
+    queryKey: ["categories", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("name")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return data.map((c) => c.name);
+    },
+    enabled: !!user,
+  });
+
+  useEffect(() => {
+    if (customCatsData) setCustomCategories(customCatsData);
+  }, [customCatsData]);
+
+  const allCategories = [...CATEGORIES_DEFAULT, ...customCategories];
   const initials = fullName
     .split(" ")
     .map((n) => n[0])
