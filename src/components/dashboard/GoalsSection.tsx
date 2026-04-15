@@ -60,6 +60,27 @@ const GoalsSection = () => {
   const { maskValue } = usePrivacy();
   const queryClient = useQueryClient();
 
+  // Fetch custom categories
+  const { data: customCatsData = [] } = useQuery({
+    queryKey: ["categories", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("name")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return data.map((c) => c.name);
+    },
+    enabled: !!user,
+  });
+
+  const allCategories = useMemo(() => {
+    const custom = customCatsData.filter(
+      (c) => !CATEGORIES.some((d) => d.toLowerCase() === c.toLowerCase())
+    );
+    return [...CATEGORIES, ...custom];
+  }, [customCatsData]);
+
   // Create state
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState("");
