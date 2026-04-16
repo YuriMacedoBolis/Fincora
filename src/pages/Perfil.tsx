@@ -495,6 +495,20 @@ const Perfil = () => {
           Sair da conta
         </Button>
 
+        {/* Rever Tutorial */}
+        <Button
+          variant="outline"
+          className="w-full gap-2 text-sm"
+          onClick={() => {
+            localStorage.removeItem(TOUR_KEY);
+            toast.success("Tutorial resetado! Volte ao Dashboard para revê-lo.");
+            navigate("/dashboard");
+          }}
+        >
+          <RotateCcw className="w-4 h-4" />
+          Rever Tutorial
+        </Button>
+
         {/* Danger Zone */}
         <Card className="border-destructive/40 bg-destructive/5">
           <CardHeader className="pb-3">
