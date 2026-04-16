@@ -104,7 +104,7 @@ const Dashboard = () => {
           <div className="hidden md:block">
             <MonthlyReport transactions={transactions} />
           </div>
-          <Button id="tour-add-btn" variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setAddOpen(true)} title="Lançamento Manual">
+          <Button id="desktop-tour-add-btn" variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setAddOpen(true)} title="Lançamento Manual">
             <PlusCircle className="w-5 h-5" />
           </Button>
           <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/analise")} title="Análise">
