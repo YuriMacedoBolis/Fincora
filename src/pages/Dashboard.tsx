@@ -141,7 +141,7 @@ const Dashboard = () => {
 
       {/* Floating chat button: only on desktop */}
       <button
-        id="tour-chat-btn"
+        id="desktop-tour-chat-btn"
         onClick={() => navigate("/chat")}
         className="hidden md:flex fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg shadow-primary/30 hover:scale-105 transition-transform items-center justify-center"
       >
