@@ -13,16 +13,16 @@ import { Label } from "@/components/ui/label";
 
 const HIDE_KEY = "hide_fincare_tutorial";
 
-const tourSteps = [
+const getTourSteps = (isMobile: boolean) => [
   {
-    target: "#tour-chat-btn",
+    target: isMobile ? "#mobile-tour-chat-btn" : "#desktop-tour-chat-btn",
     placement: "top" as const,
     title: "A Mágica Acontece Aqui ✨",
     content:
       "Fale com nossa IA como no WhatsApp para adicionar gastos e ganhos.",
   },
   {
-    target: "#tour-add-btn",
+    target: isMobile ? "#mobile-tour-add-btn" : "#desktop-tour-add-btn",
     placement: "top" as const,
     title: "Adição Manual 📝",
     content:
@@ -36,7 +36,7 @@ const tourSteps = [
       "Defina metas e o sistema criará a categoria automaticamente.",
   },
   {
-    target: "#tour-report-btn",
+    target: isMobile ? "#mobile-tour-report-btn" : "#desktop-tour-report-btn",
     placement: "bottom" as const,
     title: "Seu Mês em PDF 📊",
     content:
