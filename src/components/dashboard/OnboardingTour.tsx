@@ -34,7 +34,6 @@ const steps: Step[] = [
     title: "A Mágica Acontece Aqui ✨",
     content:
       "Fale com nossa IA como no WhatsApp para adicionar gastos e ganhos.",
-    disableBeacon: true,
   },
   {
     target: "#tour-add-btn",
@@ -42,7 +41,6 @@ const steps: Step[] = [
     title: "Adição Manual 📝",
     content:
       "Prefere o método tradicional? Adicione transações por aqui.",
-    disableBeacon: true,
   },
   {
     target: "#tour-goal-btn",
@@ -50,7 +48,6 @@ const steps: Step[] = [
     title: "Crie seus Objetivos 🎯",
     content:
       "Defina metas e o sistema criará a categoria automaticamente.",
-    disableBeacon: true,
   },
   {
     target: "#tour-report-btn",
@@ -58,7 +55,6 @@ const steps: Step[] = [
     title: "Seu Mês em PDF 📊",
     content:
       "Gere um relatório premium com apenas um clique.",
-    disableBeacon: true,
   },
 ];
 
@@ -152,16 +148,12 @@ const OnboardingTour = () => {
           showSkipButton
           disableScrolling
           callback={handleTourEvent}
-          styles={{
-            options: {
-              backgroundColor: "#0A1F17",
-              arrowColor: "#0A1F17",
-              textColor: "#ffffff",
-              primaryColor: "#FF6400",
-              overlayColor: "rgba(0, 0, 0, 0.75)",
-              zIndex: 10000,
-            },
-          }}
+          skipBeacon
+          backgroundColor="#0A1F17"
+          arrowColor="#0A1F17"
+          textColor="#ffffff"
+          primaryColor="#FF6400"
+          overlayColor="rgba(0, 0, 0, 0.75)"
           locale={{
             back: "Voltar",
             close: "Fechar",
