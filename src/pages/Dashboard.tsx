@@ -17,7 +17,8 @@ import IncomeChart from "@/components/dashboard/IncomeChart";
 import TransactionList from "@/components/dashboard/TransactionList";
 import GoalsSection from "@/components/dashboard/GoalsSection";
 import BottomNav from "@/components/dashboard/BottomNav";
-import OnboardingTour, { tourSteps } from "@/components/dashboard/OnboardingTour";
+import OnboardingTour, { getTourSteps } from "@/components/dashboard/OnboardingTour";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export interface Transaction {
   id: string;
@@ -32,9 +33,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { privacyMode, togglePrivacy } = usePrivacy();
+  const isMobile = useIsMobile();
   const [reportOpen, setReportOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [runTour, setRunTour] = useState(false);
+  const tourSteps = getTourSteps(isMobile);
 
   const joyrideStyles = {
     options: {
@@ -104,7 +107,7 @@ const Dashboard = () => {
           <div className="hidden md:block">
             <MonthlyReport transactions={transactions} />
           </div>
-          <Button id="tour-add-btn" variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setAddOpen(true)} title="Lançamento Manual">
+          <Button id="desktop-tour-add-btn" variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setAddOpen(true)} title="Lançamento Manual">
             <PlusCircle className="w-5 h-5" />
           </Button>
           <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/analise")} title="Análise">
@@ -141,7 +144,7 @@ const Dashboard = () => {
 
       {/* Floating chat button: only on desktop */}
       <button
-        id="tour-chat-btn"
+        id="desktop-tour-chat-btn"
         onClick={() => navigate("/chat")}
         className="hidden md:flex fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg shadow-primary/30 hover:scale-105 transition-transform items-center justify-center"
       >
