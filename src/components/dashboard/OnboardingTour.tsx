@@ -29,32 +29,36 @@ const tourOptions = {
 
 const steps: Step[] = [
   {
-    target: '[data-tour="chat-btn"]',
+    target: "#tour-chat-btn",
     placement: "top",
     title: "A Mágica Acontece Aqui ✨",
     content:
       "Fale com nossa IA como no WhatsApp para adicionar gastos e ganhos.",
+    disableBeacon: true,
   },
   {
-    target: '[data-tour="add-btn"]',
+    target: "#tour-add-btn",
     placement: "top",
     title: "Adição Manual 📝",
     content:
       "Prefere o método tradicional? Adicione transações por aqui.",
+    disableBeacon: true,
   },
   {
-    target: '[data-tour="new-goal-btn"]',
+    target: "#tour-goal-btn",
     placement: "bottom",
     title: "Crie seus Objetivos 🎯",
     content:
       "Defina metas e o sistema criará a categoria automaticamente.",
+    disableBeacon: true,
   },
   {
-    target: '[data-tour="report-btn"]',
+    target: "#tour-report-btn",
     placement: "bottom",
     title: "Seu Mês em PDF 📊",
     content:
       "Gere um relatório premium com apenas um clique.",
+    disableBeacon: true,
   },
 ];
 
@@ -145,8 +149,19 @@ const OnboardingTour = () => {
         <Joyride
           steps={steps}
           continuous
-          onEvent={handleTourEvent}
-          options={tourOptions}
+          showSkipButton
+          disableScrolling
+          callback={handleTourEvent}
+          styles={{
+            options: {
+              backgroundColor: "#0A1F17",
+              arrowColor: "#0A1F17",
+              textColor: "#ffffff",
+              primaryColor: "#FF6400",
+              overlayColor: "rgba(0, 0, 0, 0.75)",
+              zIndex: 10000,
+            },
+          }}
           locale={{
             back: "Voltar",
             close: "Fechar",

@@ -45,6 +45,7 @@ const BottomNav = () => {
 
           {/* Adicionar */}
           <button
+            id="tour-add-btn"
             data-tour="add-btn"
             onClick={() => setAddOpen(true)}
             className="flex flex-col items-center gap-1 py-2 px-3 text-muted-foreground hover:text-foreground transition-colors"
@@ -55,6 +56,7 @@ const BottomNav = () => {
 
           {/* Chat — elevated center button */}
           <button
+            id="tour-chat-btn"
             data-tour="chat-btn"
             onClick={() => navigate("/chat")}
             className="relative -top-4 flex items-center justify-center w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:scale-105 transition-transform"
