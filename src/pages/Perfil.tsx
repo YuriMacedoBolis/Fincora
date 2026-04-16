@@ -252,7 +252,15 @@ const Perfil = () => {
   };
 
   const handleDeleteAccount = async () => {
-    toast.error("Para excluir sua conta, entre em contato com o suporte.");
+    try {
+      const { error } = await supabase.rpc('delete_user');
+      if (error) throw error;
+      await supabase.auth.signOut();
+      toast.success("Sua conta foi excluída com sucesso.");
+      navigate("/login");
+    } catch (err: any) {
+      toast.error("Erro ao excluir conta: " + (err.message || "Tente novamente."));
+    }
   };
 
   return (
