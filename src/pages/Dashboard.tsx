@@ -15,6 +15,7 @@ import IncomeChart from "@/components/dashboard/IncomeChart";
 import TransactionList from "@/components/dashboard/TransactionList";
 import GoalsSection from "@/components/dashboard/GoalsSection";
 import BottomNav from "@/components/dashboard/BottomNav";
+import OnboardingTour from "@/components/dashboard/OnboardingTour";
 
 export interface Transaction {
   id: string;
@@ -130,6 +131,7 @@ const Dashboard = () => {
 
       {/* Bottom nav: only on mobile */}
       <BottomNav />
+      <OnboardingTour />
 
       {/* Report dialog controlled from bottom nav */}
       <MonthlyReport transactions={transactions} open={reportOpen} onOpenChange={setReportOpen} />
