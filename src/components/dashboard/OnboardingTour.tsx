@@ -1,14 +1,25 @@
 import { useState, useEffect } from "react";
-import { Joyride, STATUS, Step } from "react-joyride";
-import type { EventData } from "react-joyride";
+import { Joyride, STATUS } from "react-joyride";
+import type { EventData, Step } from "react-joyride";
 
 const TOUR_KEY = "fincare_tour_completed";
+
+const sharedOptions = {
+  backgroundColor: "#0A1F17",
+  arrowColor: "#0A1F17",
+  textColor: "#ffffff",
+  primaryColor: "#FF6400",
+  overlayColor: "rgba(0, 0, 0, 0.75)",
+  zIndex: 10000,
+  showProgress: true,
+  skipBeacon: true,
+  buttons: ["back" as const, "close" as const, "skip" as const, "primary" as const],
+};
 
 const steps: Step[] = [
   {
     target: "body",
     placement: "center",
-    skipBeacon: true,
     title: "Bem-vindo ao FinCare! 🧡",
     content:
       "Sua nova babá financeira inteligente. Vamos fazer um tour rápido de 1 minuto para você dominar o app.",
@@ -16,7 +27,6 @@ const steps: Step[] = [
   {
     target: '[data-tour="chat-btn"]',
     placement: "top",
-    skipBeacon: true,
     title: "A Mágica Acontece Aqui ✨",
     content:
       'Esqueça os formulários chatos! Fale com nossa IA como se fosse um amigo no WhatsApp: "Gastei 50 no ifood" ou "Recebi 2000 de salário" e ela organiza tudo para você.',
@@ -24,7 +34,6 @@ const steps: Step[] = [
   {
     target: '[data-tour="add-btn"]',
     placement: "top",
-    skipBeacon: true,
     title: "Adição Manual 📝",
     content:
       "Prefere o método tradicional? Adicione suas receitas e despesas manualmente por aqui.",
@@ -32,7 +41,6 @@ const steps: Step[] = [
   {
     target: '[data-tour="new-goal-btn"]',
     placement: "bottom",
-    skipBeacon: true,
     title: "Crie seus Objetivos 🎯",
     content:
       "Quer viajar ou montar sua reserva? Crie uma meta aqui e a categoria será gerada automaticamente no sistema.",
@@ -40,21 +48,11 @@ const steps: Step[] = [
   {
     target: '[data-tour="report-btn"]',
     placement: "bottom",
-    skipBeacon: true,
     title: "Seu Mês em PDF 📊",
     content:
       "Com apenas um clique, gere um relatório completo e com visual premium do seu desempenho financeiro. Pronto, você já pode começar!",
   },
 ];
-
-const sharedStepProps = {
-  backgroundColor: "#0A1F17",
-  textColor: "#ffffff",
-  primaryColor: "#FF6400",
-  overlayColor: "rgba(0, 0, 0, 0.75)",
-  zIndex: 10000,
-  showProgress: true,
-};
 
 const OnboardingTour = () => {
   const [run, setRun] = useState(false);
@@ -81,9 +79,8 @@ const OnboardingTour = () => {
     <Joyride
       steps={steps}
       continuous
-      showProgress
       onEvent={handleEvent}
-      options={tourOptions}
+      options={sharedOptions}
       locale={{
         back: "Voltar",
         close: "Fechar",
