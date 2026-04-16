@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Pencil, LogOut, Trash2, AlertTriangle, ChevronRight, Moon, Plus } from "lucide-react";
+import { ArrowLeft, Pencil, LogOut, Trash2, AlertTriangle, ChevronRight, Moon, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,7 +39,7 @@ const Perfil = () => {
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
-  const [customCategories, setCustomCategories] = useState<string[]>([]);
+  const [customCategories, setCustomCategories] = useState<{ id: string; name: string }[]>([]);
   const [newCategory, setNewCategory] = useState("");
   const [savingCategory, setSavingCategory] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
@@ -77,10 +77,10 @@ const Perfil = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
-        .select("name")
+        .select("id, name")
         .eq("user_id", user!.id);
       if (error) throw error;
-      return data.map((c) => c.name);
+      return data;
     },
     enabled: !!user,
   });
@@ -89,7 +89,7 @@ const Perfil = () => {
     if (customCatsData) setCustomCategories(customCatsData);
   }, [customCatsData]);
 
-  const allCategories = [...CATEGORIES_DEFAULT, ...customCategories];
+  const allCategoryNames = [...CATEGORIES_DEFAULT, ...customCategories.map(c => c.name)];
   const fullName = profile?.full_name || "Usuário";
   const initials = fullName
     .split(" ")
@@ -214,7 +214,7 @@ const Perfil = () => {
       toast.error("Digite o nome da categoria.");
       return;
     }
-    if (allCategories.some((c) => c.toLowerCase() === cat.toLowerCase())) {
+    if (allCategoryNames.some((c) => c.toLowerCase() === cat.toLowerCase())) {
       toast.error("Essa categoria já existe.");
       return;
     }
@@ -226,7 +226,7 @@ const Perfil = () => {
     if (error) {
       toast.error("Erro ao adicionar categoria.");
     } else {
-      setCustomCategories((prev) => [...prev, cat]);
+      setCustomCategories((prev) => [...prev, { id: crypto.randomUUID(), name: cat }]);
       setNewCategory("");
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success("Categoria adicionada!");
@@ -434,9 +434,29 @@ const Perfil = () => {
             <div className="space-y-3">
               <span className="text-sm font-medium">Categorias de Transação</span>
               <div className="flex flex-wrap gap-2">
-                {allCategories.map((cat) => (
+                {CATEGORIES_DEFAULT.map((cat) => (
                   <Badge key={cat} variant="secondary" className="text-xs">
                     {cat}
+                  </Badge>
+                ))}
+                {customCategories.map((cat) => (
+                  <Badge key={cat.id} variant="secondary" className="text-xs flex items-center gap-1 pr-1">
+                    {cat.name}
+                    <button
+                      onClick={async () => {
+                        const { error } = await supabase.from("categories").delete().eq("id", cat.id);
+                        if (error) {
+                          toast.error("Erro ao remover categoria.");
+                        } else {
+                          setCustomCategories((prev) => prev.filter((c) => c.id !== cat.id));
+                          queryClient.invalidateQueries({ queryKey: ["categories"] });
+                          toast.success("Categoria removida com sucesso!");
+                        }
+                      }}
+                      className="rounded-full hover:bg-destructive/20 p-0.5 transition-colors"
+                    >
+                      <X className="w-3 h-3 text-muted-foreground hover:text-destructive" />
+                    </button>
                   </Badge>
                 ))}
               </div>
