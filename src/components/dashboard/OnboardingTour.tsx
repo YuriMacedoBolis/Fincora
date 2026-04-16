@@ -47,12 +47,13 @@ const steps: Step[] = [
   },
 ];
 
-const tourOptions = {
+const sharedStepProps = {
   backgroundColor: "#0A1F17",
   textColor: "#ffffff",
   primaryColor: "#FF6400",
   overlayColor: "rgba(0, 0, 0, 0.75)",
   zIndex: 10000,
+  showProgress: true,
 };
 
 const OnboardingTour = () => {
