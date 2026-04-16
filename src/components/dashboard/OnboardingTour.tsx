@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { Joyride, STATUS } from "react-joyride";
-import type { EventData } from "react-joyride";
 import {
   Dialog,
   DialogContent,
@@ -15,8 +13,7 @@ import { Label } from "@/components/ui/label";
 
 const HIDE_KEY = "hide_fincare_tutorial";
 
-
-const steps = [
+const tourSteps = [
   {
     target: "#tour-chat-btn",
     placement: "top" as const,
@@ -47,10 +44,13 @@ const steps = [
   },
 ];
 
-const OnboardingTour = () => {
+interface OnboardingTourProps {
+  onStartTour: () => void;
+}
+
+const OnboardingTour = ({ onStartTour }: OnboardingTourProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
-  const [runTour, setRunTour] = useState(false);
 
   useEffect(() => {
     const hidden = localStorage.getItem(HIDE_KEY);
@@ -72,15 +72,7 @@ const OnboardingTour = () => {
       localStorage.setItem(HIDE_KEY, "true");
     }
     setShowDialog(false);
-    // Small delay so dialog closes before tour starts
-    setTimeout(() => setRunTour(true), 400);
-  };
-
-  const handleTourEvent = (data: EventData) => {
-    const { status } = data;
-    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-      setRunTour(false);
-    }
+    setTimeout(onStartTour, 400);
   };
 
   return (
@@ -114,8 +106,7 @@ const OnboardingTour = () => {
             <Button
               variant="outline"
               onClick={handleClose}
-              className="flex-1 border-white/20 hover:bg-white/10"
-              style={{ color: "#F5EBE1" }}
+              className="flex-1"
             >
               Agora não
             </Button>
@@ -129,34 +120,9 @@ const OnboardingTour = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {runTour && (
-        <Joyride
-          steps={steps}
-          continuous
-          onEvent={handleTourEvent}
-          options={{
-            skipBeacon: true,
-            skipScroll: true,
-            backgroundColor: "#0A1F17",
-            arrowColor: "#0A1F17",
-            textColor: "#ffffff",
-            primaryColor: "#FF6400",
-            overlayColor: "rgba(0, 0, 0, 0.75)",
-            buttons: ["back", "close", "skip", "primary"],
-          }}
-          locale={{
-            back: "Voltar",
-            close: "Fechar",
-            last: "Concluir",
-            next: "Próximo",
-            skip: "Pular",
-          }}
-        />
-      )}
     </>
   );
 };
 
 export default OnboardingTour;
-export { HIDE_KEY };
+export { HIDE_KEY, tourSteps };
