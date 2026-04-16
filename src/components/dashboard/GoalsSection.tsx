@@ -189,7 +189,7 @@ const GoalsSection = () => {
           <h2 className="text-base font-semibold">Minhas Metas</h2>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="sm" className="gap-1 text-xs">
+              <Button data-tour="new-goal-btn" variant="ghost" size="sm" className="gap-1 text-xs">
                 <Plus className="w-4 h-4" /> Nova Meta
               </Button>
             </DialogTrigger>
