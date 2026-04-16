@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, MessageCircle, User, PlusCircle, Eye, EyeOff, BarChart3 } from "lucide-react";
+import { Joyride, STATUS } from "react-joyride";
+import type { EventData } from "react-joyride";
 import { usePrivacy } from "@/contexts/PrivacyContext";
 import MonthlyReport from "@/components/dashboard/MonthlyReport";
 import AddTransactionModal from "@/components/dashboard/AddTransactionModal";
@@ -15,7 +17,7 @@ import IncomeChart from "@/components/dashboard/IncomeChart";
 import TransactionList from "@/components/dashboard/TransactionList";
 import GoalsSection from "@/components/dashboard/GoalsSection";
 import BottomNav from "@/components/dashboard/BottomNav";
-import OnboardingTour from "@/components/dashboard/OnboardingTour";
+import OnboardingTour, { tourSteps } from "@/components/dashboard/OnboardingTour";
 
 export interface Transaction {
   id: string;
@@ -32,6 +34,16 @@ const Dashboard = () => {
   const { privacyMode, togglePrivacy } = usePrivacy();
   const [reportOpen, setReportOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [runTour, setRunTour] = useState(false);
+
+  const joyrideStyles = {
+    options: {
+      zIndex: 10000,
+      primaryColor: "#FF6400",
+      backgroundColor: "#0A1F17",
+      textColor: "#FFFFFF",
+    },
+  } as const;
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -72,6 +84,12 @@ const Dashboard = () => {
     navigate("/");
   };
 
+  const handleTourEvent = ({ status }: EventData) => {
+    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
+      setRunTour(false);
+    }
+  };
+
   const firstName = (profile?.full_name || "Usuário").split(" ")[0];
 
   return (
@@ -86,7 +104,7 @@ const Dashboard = () => {
           <div className="hidden md:block">
             <MonthlyReport transactions={transactions} />
           </div>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setAddOpen(true)} title="Lançamento Manual">
+          <Button id="tour-add-btn" variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setAddOpen(true)} title="Lançamento Manual">
             <PlusCircle className="w-5 h-5" />
           </Button>
           <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/analise")} title="Análise">
@@ -123,6 +141,7 @@ const Dashboard = () => {
 
       {/* Floating chat button: only on desktop */}
       <button
+        id="tour-chat-btn"
         onClick={() => navigate("/chat")}
         className="hidden md:flex fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg shadow-primary/30 hover:scale-105 transition-transform items-center justify-center"
       >
@@ -131,7 +150,30 @@ const Dashboard = () => {
 
       {/* Bottom nav: only on mobile */}
       <BottomNav />
-      <OnboardingTour />
+      <OnboardingTour onStartTour={() => setRunTour(true)} />
+
+      <Joyride
+        run={runTour}
+        steps={tourSteps}
+        continuous
+        onEvent={handleTourEvent}
+        styles={joyrideStyles as any}
+        options={{
+          ...joyrideStyles.options,
+          arrowColor: "#0A1F17",
+          overlayColor: "rgba(0, 0, 0, 0.75)",
+          skipBeacon: true,
+          skipScroll: true,
+          buttons: ["back", "close", "skip", "primary"],
+        }}
+        locale={{
+          back: "Voltar",
+          close: "Fechar",
+          last: "Concluir",
+          next: "Próximo",
+          skip: "Pular",
+        }}
+      />
 
       {/* Report dialog controlled from bottom nav */}
       <MonthlyReport transactions={transactions} open={reportOpen} onOpenChange={setReportOpen} />
