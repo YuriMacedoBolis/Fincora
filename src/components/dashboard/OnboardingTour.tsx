@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Joyride, STATUS } from "react-joyride";
-import type { EventData, Step } from "react-joyride";
+import type { EventData } from "react-joyride";
 import {
   Dialog,
   DialogContent,
@@ -27,31 +27,31 @@ const tourOptions = {
   buttons: ["back" as const, "close" as const, "skip" as const, "primary" as const],
 };
 
-const steps: Step[] = [
+const steps = [
   {
     target: "#tour-chat-btn",
-    placement: "top",
+    placement: "top" as const,
     title: "A Mágica Acontece Aqui ✨",
     content:
       "Fale com nossa IA como no WhatsApp para adicionar gastos e ganhos.",
   },
   {
     target: "#tour-add-btn",
-    placement: "top",
+    placement: "top" as const,
     title: "Adição Manual 📝",
     content:
       "Prefere o método tradicional? Adicione transações por aqui.",
   },
   {
     target: "#tour-goal-btn",
-    placement: "bottom",
+    placement: "bottom" as const,
     title: "Crie seus Objetivos 🎯",
     content:
       "Defina metas e o sistema criará a categoria automaticamente.",
   },
   {
     target: "#tour-report-btn",
-    placement: "bottom",
+    placement: "bottom" as const,
     title: "Seu Mês em PDF 📊",
     content:
       "Gere um relatório premium com apenas um clique.",
@@ -145,15 +145,17 @@ const OnboardingTour = () => {
         <Joyride
           steps={steps}
           continuous
-          showSkipButton
-          disableScrolling
-          callback={handleTourEvent}
-          skipBeacon
-          backgroundColor="#0A1F17"
-          arrowColor="#0A1F17"
-          textColor="#ffffff"
-          primaryColor="#FF6400"
-          overlayColor="rgba(0, 0, 0, 0.75)"
+          onEvent={handleTourEvent}
+          options={{
+            skipBeacon: true,
+            skipScroll: true,
+            backgroundColor: "#0A1F17",
+            arrowColor: "#0A1F17",
+            textColor: "#ffffff",
+            primaryColor: "#FF6400",
+            overlayColor: "rgba(0, 0, 0, 0.75)",
+            buttons: ["back", "close", "skip", "primary"],
+          }}
           locale={{
             back: "Voltar",
             close: "Fechar",
