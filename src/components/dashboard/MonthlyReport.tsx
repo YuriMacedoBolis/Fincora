@@ -137,7 +137,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
   return (
     <>
       {controlledOpen === undefined && (
-        <Button variant="outline" size="sm" onClick={() => setOpen(true)} className="gap-1.5">
+        <Button data-tour="report-btn" variant="outline" size="sm" onClick={() => setOpen(true)} className="gap-1.5">
           <FileText className="w-4 h-4" />
           <span className="hidden sm:inline">Relatório do Mês</span>
         </Button>
