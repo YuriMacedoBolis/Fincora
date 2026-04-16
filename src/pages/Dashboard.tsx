@@ -33,9 +33,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { privacyMode, togglePrivacy } = usePrivacy();
+  const isMobile = useIsMobile();
   const [reportOpen, setReportOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [runTour, setRunTour] = useState(false);
+  const tourSteps = getTourSteps(isMobile);
 
   const joyrideStyles = {
     options: {
