@@ -15,17 +15,6 @@ import { Label } from "@/components/ui/label";
 
 const HIDE_KEY = "hide_fincare_tutorial";
 
-const tourOptions = {
-  backgroundColor: "#0A1F17",
-  arrowColor: "#0A1F17",
-  textColor: "#ffffff",
-  primaryColor: "#FF6400",
-  overlayColor: "rgba(0, 0, 0, 0.75)",
-  zIndex: 10000,
-  showProgress: true,
-  skipBeacon: true,
-  buttons: ["back" as const, "close" as const, "skip" as const, "primary" as const],
-};
 
 const steps = [
   {
