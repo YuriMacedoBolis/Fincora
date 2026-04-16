@@ -500,7 +500,7 @@ const Perfil = () => {
           variant="outline"
           className="w-full gap-2 text-sm"
           onClick={() => {
-            localStorage.removeItem(TOUR_KEY);
+            localStorage.removeItem(HIDE_KEY);
             toast.success("Tutorial resetado! Volte ao Dashboard para revê-lo.");
             navigate("/dashboard");
           }}
