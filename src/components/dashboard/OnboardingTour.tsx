@@ -125,4 +125,4 @@ const OnboardingTour = ({ onStartTour }: OnboardingTourProps) => {
 };
 
 export default OnboardingTour;
-export { HIDE_KEY, tourSteps };
+export { HIDE_KEY, getTourSteps };

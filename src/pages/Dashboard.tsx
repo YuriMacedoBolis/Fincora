@@ -17,7 +17,8 @@ import IncomeChart from "@/components/dashboard/IncomeChart";
 import TransactionList from "@/components/dashboard/TransactionList";
 import GoalsSection from "@/components/dashboard/GoalsSection";
 import BottomNav from "@/components/dashboard/BottomNav";
-import OnboardingTour, { tourSteps } from "@/components/dashboard/OnboardingTour";
+import OnboardingTour, { getTourSteps } from "@/components/dashboard/OnboardingTour";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export interface Transaction {
   id: string;
