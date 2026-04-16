@@ -1,10 +1,21 @@
 import { useState, useEffect } from "react";
 import { Joyride, STATUS } from "react-joyride";
 import type { EventData, Step } from "react-joyride";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
-const TOUR_KEY = "fincare_tour_completed";
+const HIDE_KEY = "hide_fincare_tutorial";
 
-const sharedOptions = {
+const tourOptions = {
   backgroundColor: "#0A1F17",
   arrowColor: "#0A1F17",
   textColor: "#ffffff",
@@ -18,79 +29,136 @@ const sharedOptions = {
 
 const steps: Step[] = [
   {
-    target: "body",
-    placement: "center",
-    title: "Bem-vindo ao FinCare! 🧡",
-    content:
-      "Sua nova babá financeira inteligente. Vamos fazer um tour rápido de 1 minuto para você dominar o app.",
-  },
-  {
     target: '[data-tour="chat-btn"]',
     placement: "top",
     title: "A Mágica Acontece Aqui ✨",
     content:
-      'Esqueça os formulários chatos! Fale com nossa IA como se fosse um amigo no WhatsApp: "Gastei 50 no ifood" ou "Recebi 2000 de salário" e ela organiza tudo para você.',
+      "Fale com nossa IA como no WhatsApp para adicionar gastos e ganhos.",
   },
   {
     target: '[data-tour="add-btn"]',
     placement: "top",
     title: "Adição Manual 📝",
     content:
-      "Prefere o método tradicional? Adicione suas receitas e despesas manualmente por aqui.",
+      "Prefere o método tradicional? Adicione transações por aqui.",
   },
   {
     target: '[data-tour="new-goal-btn"]',
     placement: "bottom",
     title: "Crie seus Objetivos 🎯",
     content:
-      "Quer viajar ou montar sua reserva? Crie uma meta aqui e a categoria será gerada automaticamente no sistema.",
+      "Defina metas e o sistema criará a categoria automaticamente.",
   },
   {
     target: '[data-tour="report-btn"]',
     placement: "bottom",
     title: "Seu Mês em PDF 📊",
     content:
-      "Com apenas um clique, gere um relatório completo e com visual premium do seu desempenho financeiro. Pronto, você já pode começar!",
+      "Gere um relatório premium com apenas um clique.",
   },
 ];
 
 const OnboardingTour = () => {
-  const [run, setRun] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
+  const [runTour, setRunTour] = useState(false);
 
   useEffect(() => {
-    const completed = localStorage.getItem(TOUR_KEY);
-    if (!completed) {
-      const timer = setTimeout(() => setRun(true), 800);
+    const hidden = localStorage.getItem(HIDE_KEY);
+    if (hidden !== "true") {
+      const timer = setTimeout(() => setShowDialog(true), 600);
       return () => clearTimeout(timer);
     }
   }, []);
 
-  const handleEvent = (data: EventData) => {
+  const handleClose = () => {
+    if (dontShowAgain) {
+      localStorage.setItem(HIDE_KEY, "true");
+    }
+    setShowDialog(false);
+  };
+
+  const handleStartTour = () => {
+    if (dontShowAgain) {
+      localStorage.setItem(HIDE_KEY, "true");
+    }
+    setShowDialog(false);
+    // Small delay so dialog closes before tour starts
+    setTimeout(() => setRunTour(true), 400);
+  };
+
+  const handleTourEvent = (data: EventData) => {
     const { status } = data;
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-      setRun(false);
-      localStorage.setItem(TOUR_KEY, "true");
+      setRunTour(false);
     }
   };
 
-  if (!run) return null;
-
   return (
-    <Joyride
-      steps={steps}
-      continuous
-      onEvent={handleEvent}
-      options={sharedOptions}
-      locale={{
-        back: "Voltar",
-        close: "Fechar",
-        last: "Concluir",
-        next: "Próximo",
-        skip: "Pular",
-      }}
-    />
+    <>
+      <Dialog open={showDialog} onOpenChange={(open) => {
+        if (!open) handleClose();
+      }}>
+        <DialogContent className="sm:max-w-md border-border/60" style={{ background: "#0A1F17" }}>
+          <DialogHeader>
+            <DialogTitle className="text-xl text-center" style={{ color: "#F5EBE1" }}>
+              Bem-vindo ao FinCare! 🧡
+            </DialogTitle>
+            <DialogDescription className="text-center text-sm pt-2" style={{ color: "rgba(245, 235, 225, 0.75)" }}>
+              Gostaria de fazer um tour rápido de 1 minuto para conhecer todas as funcionalidades e aprender a usar a IA?
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex items-center gap-2 pt-2 px-1">
+            <Checkbox
+              id="dont-show"
+              checked={dontShowAgain}
+              onCheckedChange={(checked) => setDontShowAgain(checked === true)}
+              className="border-white/40 data-[state=checked]:bg-[#FF6400] data-[state=checked]:border-[#FF6400]"
+            />
+            <Label htmlFor="dont-show" className="text-sm cursor-pointer" style={{ color: "rgba(245, 235, 225, 0.6)" }}>
+              Não mostrar novamente
+            </Label>
+          </div>
+
+          <DialogFooter className="flex-row gap-2 sm:gap-2 pt-2">
+            <Button
+              variant="outline"
+              onClick={handleClose}
+              className="flex-1 border-white/20 hover:bg-white/10"
+              style={{ color: "#F5EBE1" }}
+            >
+              Agora não
+            </Button>
+            <Button
+              onClick={handleStartTour}
+              className="flex-1 font-semibold text-white hover:opacity-90"
+              style={{ backgroundColor: "#FF6400" }}
+            >
+              Começar Tutorial
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {runTour && (
+        <Joyride
+          steps={steps}
+          continuous
+          onEvent={handleTourEvent}
+          options={tourOptions}
+          locale={{
+            back: "Voltar",
+            close: "Fechar",
+            last: "Concluir",
+            next: "Próximo",
+            skip: "Pular",
+          }}
+        />
+      )}
+    </>
   );
 };
 
 export default OnboardingTour;
-export { TOUR_KEY };
+export { HIDE_KEY };

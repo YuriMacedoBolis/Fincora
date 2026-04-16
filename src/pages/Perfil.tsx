@@ -16,7 +16,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { TOUR_KEY } from "@/components/dashboard/OnboardingTour";
+import { HIDE_KEY } from "@/components/dashboard/OnboardingTour";
 
 const CATEGORIES_DEFAULT = ["Alimentação", "Transporte", "Moradia", "Lazer", "Saúde", "Educação", "Compras", "Assinaturas", "Investimentos", "Quitação de Dívidas", "Salário", "Freelance", "Rendimentos", "Outros"];
 
@@ -500,7 +500,7 @@ const Perfil = () => {
           variant="outline"
           className="w-full gap-2 text-sm"
           onClick={() => {
-            localStorage.removeItem(TOUR_KEY);
+            localStorage.removeItem(HIDE_KEY);
             toast.success("Tutorial resetado! Volte ao Dashboard para revê-lo.");
             navigate("/dashboard");
           }}
