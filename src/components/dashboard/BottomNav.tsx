@@ -36,7 +36,7 @@ const BottomNav = () => {
         <div className="glass border-t border-border/40 px-4 py-2 flex items-end justify-between">
           {/* Relatório */}
           <button
-            id="tour-report-btn"
+            id="mobile-tour-report-btn"
             onClick={() => setReportOpen(true)}
             className="flex flex-col items-center gap-1 py-2 px-3 text-muted-foreground hover:text-foreground transition-colors"
           >
