@@ -34,7 +34,6 @@ const Dashboard = () => {
   const { user, signOut } = useAuth();
   const { privacyMode, togglePrivacy } = usePrivacy();
   const isMobile = useIsMobile();
-  const [reportOpen, setReportOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [runTour, setRunTour] = useState(false);
   const tourSteps = getTourSteps(isMobile);
@@ -87,7 +86,8 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const handleTourEvent = ({ status }: EventData) => {
+  const handleTourCallback = (data: EventData) => {
+    const { status } = data;
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
       setRunTour(false);
     }
@@ -159,7 +159,7 @@ const Dashboard = () => {
         run={runTour}
         steps={tourSteps}
         continuous
-        onEvent={handleTourEvent}
+        onEvent={handleTourCallback}
         styles={joyrideStyles as any}
         options={{
           ...joyrideStyles.options,
@@ -177,9 +177,6 @@ const Dashboard = () => {
           skip: "Pular",
         }}
       />
-
-      {/* Report dialog controlled from bottom nav */}
-      <MonthlyReport transactions={transactions} open={reportOpen} onOpenChange={setReportOpen} />
 
       {/* Add transaction modal */}
       <AddTransactionModal open={addOpen} onOpenChange={setAddOpen} />
