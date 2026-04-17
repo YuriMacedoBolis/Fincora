@@ -86,7 +86,8 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const handleTourEvent = ({ status }: EventData) => {
+  const handleTourCallback = (data: EventData) => {
+    const { status } = data;
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
       setRunTour(false);
     }
