@@ -47,8 +47,14 @@ const Login = () => {
         if (data.user) {
           await supabase.from("profiles").update({ full_name: fullName }).eq("id", data.user.id);
         }
-        toast.success("Conta criada com sucesso!");
-        navigate("/dashboard");
+        // If email confirmation is enabled, no session is returned on signup.
+        if (!data.session) {
+          toast.success("Conta criada! Verifique seu e-mail para confirmar o cadastro antes de entrar.");
+          setMode("login");
+        } else {
+          toast.success("Conta criada com sucesso!");
+          navigate("/dashboard");
+        }
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
