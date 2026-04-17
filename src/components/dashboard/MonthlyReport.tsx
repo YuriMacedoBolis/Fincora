@@ -70,46 +70,30 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
   });
 
   // Previous month total expenses
-  const prevMonthData = useMemo(() => {
-    return prevMonthTx
-      .filter((t) => t.type === "saida")
-      .reduce((s, t) => s + Math.abs(Number(t.amount)), 0);
-  }, [prevMonthTx]);
+  const prevMonthData = useMemo(() => sumExpenses(prevMonthTx), [prevMonthTx]);
 
   // Daily average spend
-  const dailyAvg = useMemo(() => {
-    const day = new Date().getDate();
-    return day > 0 ? expenses / day : 0;
-  }, [expenses]);
+  const dailyAvg = useMemo(
+    () => dailyAverage(expenses, new Date().getDate()),
+    [expenses],
+  );
 
   // Top 3 expense categories
-  const topCategories = useMemo(() => {
-    const map: Record<string, number> = {};
-    monthlyTransactions
-      .filter((t) => t.type === "saida")
-      .forEach((t) => {
-        const cat = t.category || "Sem categoria";
-        map[cat] = (map[cat] || 0) + Math.abs(Number(t.amount));
-      });
-    return Object.entries(map)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 3);
-  }, [monthlyTransactions]);
+  const topCategories = useMemo(
+    () => topExpenseCategories(monthlyTransactions, 3),
+    [monthlyTransactions],
+  );
 
   // Largest single expense
-  const largestExpense = useMemo(() => {
-    const exits = monthlyTransactions.filter((t) => t.type === "saida");
-    if (!exits.length) return null;
-    return exits.reduce((max, t) =>
-      Math.abs(Number(t.amount)) > Math.abs(Number(max.amount)) ? t : max
-    );
-  }, [monthlyTransactions]);
+  const largestExpense = useMemo(
+    () => computeLargestExpense(monthlyTransactions),
+    [monthlyTransactions],
+  );
 
   const monthName = new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
 
-  const monthDiff = prevMonthData > 0
-    ? (((expenses - prevMonthData) / prevMonthData) * 100).toFixed(1)
-    : null;
+  const monthDiffNum = percentChange(expenses, prevMonthData);
+  const monthDiff = monthDiffNum !== null ? monthDiffNum.toFixed(1) : null;
 
   const handleExportPDF = async () => {
     if (!reportRef.current) return;
