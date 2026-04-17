@@ -47,11 +47,17 @@ const Login = () => {
         if (data.user) {
           await supabase.from("profiles").update({ full_name: fullName }).eq("id", data.user.id);
         }
-        // If email confirmation is enabled, no session is returned on signup.
-        if (!data.session) {
-          toast.success("Conta criada! Verifique seu e-mail para confirmar o cadastro antes de entrar.");
+        // Email confirmation enabled: user exists but no session is returned.
+        if (data.user && !data.session) {
+          toast.success(
+            "Conta criada! 🧡 Por favor, verifique sua caixa de entrada (e a pasta de spam) para confirmar seu e-mail antes de fazer login.",
+            { duration: 8000 },
+          );
+          // Clear the form and return to login view
+          setPassword("");
+          setFullName("");
           setMode("login");
-        } else {
+        } else if (data.session) {
           toast.success("Conta criada com sucesso!");
           navigate("/dashboard");
         }
@@ -59,7 +65,14 @@ const Login = () => {
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        toast.error(error.message);
+        const msg = error.message.toLowerCase();
+        if (msg.includes("email not confirmed") || msg.includes("not confirmed")) {
+          toast.error("Você precisa confirmar seu e-mail primeiro. Verifique sua caixa de entrada.");
+        } else if (msg.includes("invalid login credentials")) {
+          toast.error("E-mail ou senha incorretos.");
+        } else {
+          toast.error(error.message);
+        }
       } else {
         navigate("/dashboard");
       }
