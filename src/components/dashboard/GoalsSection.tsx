@@ -99,6 +99,7 @@ const GoalsSection = () => {
       const { data, error } = await supabase
         .from("goals")
         .select("*")
+        .eq("user_id", user!.id)
         .order("category");
       if (error) throw error;
       return data;
