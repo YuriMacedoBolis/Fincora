@@ -55,6 +55,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
       const { data, error } = await supabase
         .from("transactions")
         .select("*")
+        .eq("user_id", user!.id)
         .gte("created_at", prevStart)
         .lte("created_at", prevEnd);
       if (error) throw error;

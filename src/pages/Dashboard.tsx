@@ -72,6 +72,7 @@ const Dashboard = () => {
       const { data, error } = await supabase
         .from("transactions")
         .select("*")
+        .eq("user_id", user!.id)
         .gte("created_at", startOfMonth)
         .lte("created_at", endOfMonth)
         .order("created_at", { ascending: false });
