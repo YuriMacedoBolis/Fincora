@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import type { Transaction } from "@/pages/Dashboard";
+import type { Transaction } from "@/types";
 import { usePrivacy } from "@/contexts/PrivacyContext";
 import { format, subDays, subMonths, subYears, startOfDay, startOfMonth, startOfYear, isAfter } from "date-fns";
 import { ptBR } from "date-fns/locale";

@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import AddTransactionModal from "@/components/dashboard/AddTransactionModal";
 import MonthlyReport from "@/components/dashboard/MonthlyReport";
-import type { Transaction } from "@/pages/Dashboard";
+import type { Transaction } from "@/types";
 
 const BottomNav = () => {
   const navigate = useNavigate();
@@ -33,8 +33,11 @@ const BottomNav = () => {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 w-full z-50 md:hidden">
-        <div className="glass border-t border-border/40 px-4 py-2 flex items-end justify-between">
+      <nav
+        className="fixed bottom-0 left-0 w-full z-50 md:hidden"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
+        <div className="glass border-t border-border/40 px-4 pt-2 pb-2 flex items-end justify-between">
           {/* Relatório */}
           <button
             id="mobile-tour-report-btn"

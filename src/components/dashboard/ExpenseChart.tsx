@@ -1,5 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import type { Transaction } from "@/pages/Dashboard";
+import type { Transaction } from "@/types";
 import { usePrivacy } from "@/contexts/PrivacyContext";
 
 const COLORS = ["#6366F1", "#10B981", "#F97316", "#EF4444", "#8B5CF6", "#EC4899"];
