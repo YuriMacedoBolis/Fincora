@@ -167,8 +167,6 @@ const Dashboard = () => {
           overlayColor: "rgba(0, 0, 0, 0.75)",
           skipBeacon: true,
           skipScroll: true,
-          disableScrolling: true,
-          showSkipButton: true,
           buttons: ["back", "close", "skip", "primary"],
         }}
         locale={{
