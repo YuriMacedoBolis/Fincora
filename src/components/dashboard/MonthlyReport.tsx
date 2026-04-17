@@ -42,7 +42,12 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
 
   // Fetch previous month transactions from Supabase (current query is limited to current month)
   const { data: prevMonthTx = [] } = useQuery({
-    queryKey: ["transactions-prev-month", user?.id],
+    queryKey: ["transactions", user?.id, "month", (() => {
+      const n = new Date();
+      const py = n.getMonth() === 0 ? n.getFullYear() - 1 : n.getFullYear();
+      const pm = n.getMonth() === 0 ? 12 : n.getMonth();
+      return `${py}-${String(pm).padStart(2, "0")}`;
+    })()],
     queryFn: async () => {
       const now = new Date();
       const prevStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();

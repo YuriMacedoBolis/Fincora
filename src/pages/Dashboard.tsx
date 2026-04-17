@@ -61,10 +61,12 @@ const Dashboard = () => {
     enabled: !!user,
   });
 
+  const now = new Date();
+  const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ["transactions", user?.id],
+    queryKey: ["transactions", user?.id, "month", monthKey],
     queryFn: async () => {
-      const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
       const { data, error } = await supabase

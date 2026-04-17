@@ -86,7 +86,7 @@ const Analise = () => {
   const [timeframe, setTimeframe] = useState<Timeframe>("monthly");
 
   const { data: transactions = [] } = useQuery({
-    queryKey: ["transactions", user?.id],
+    queryKey: ["transactions", user?.id, "all"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("transactions")
