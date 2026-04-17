@@ -70,7 +70,7 @@ const AddTransactionModal = ({ open, onOpenChange }: AddTransactionModalProps) =
 
     setSaving(true);
     const { error } = await supabase.from("transactions").insert({
-      amount: parsedAmount,
+      amount: sanitizedValue,
       description: description.trim(),
       category,
       type,
