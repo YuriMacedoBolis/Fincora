@@ -18,7 +18,7 @@ const BottomNav = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const { data: transactions = [] } = useQuery({
-    queryKey: ["transactions", user?.id],
+    queryKey: ["transactions", user?.id, "all"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("transactions")
