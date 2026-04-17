@@ -11,17 +11,9 @@ import {
 import { format, subDays, subMonths, startOfDay, startOfMonth, differenceInDays, startOfYear } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import BottomNav from "@/components/dashboard/BottomNav";
+import type { Transaction } from "@/types";
 
 type Timeframe = "weekly" | "monthly";
-
-interface Transaction {
-  id: string;
-  type: string | null;
-  description: string;
-  amount: number;
-  category: string | null;
-  created_at: string | null;
-}
 
 const INCOME_COLOR = "#8CC850";
 const EXPENSE_COLOR = "#FF6400";
