@@ -19,15 +19,20 @@ import { usePrivacy } from "@/contexts/PrivacyContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  formatBRL,
+  sumExpenses,
+  dailyAverage,
+  topExpenseCategories,
+  largestExpense as computeLargestExpense,
+  percentChange,
+} from "@/lib/finance";
 
 interface MonthlyReportProps {
   transactions: Transaction[];
   open?: boolean;
   onOpenChange?: (v: boolean) => void;
 }
-
-const formatBRL = (value: number) =>
-  value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: MonthlyReportProps) => {
   const { maskValue } = usePrivacy();
