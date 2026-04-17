@@ -20,14 +20,7 @@ import BottomNav from "@/components/dashboard/BottomNav";
 import OnboardingTour, { getTourSteps } from "@/components/dashboard/OnboardingTour";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-export interface Transaction {
-  id: string;
-  type: string | null;
-  description: string;
-  amount: number;
-  category: string | null;
-  created_at: string | null;
-}
+import type { Transaction } from "@/types";
 
 const Dashboard = () => {
   const navigate = useNavigate();
