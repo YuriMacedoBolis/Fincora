@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, MessageCircle, User, PlusCircle, Eye, EyeOff, BarChart3 } from "lucide-react";
-import Joyride, { STATUS } from "react-joyride";
+import { Joyride, STATUS } from "react-joyride";
 import type { CallBackProps } from "react-joyride";
 import { usePrivacy } from "@/contexts/PrivacyContext";
 import MonthlyReport from "@/components/dashboard/MonthlyReport";
