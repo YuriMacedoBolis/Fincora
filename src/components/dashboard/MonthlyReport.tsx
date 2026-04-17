@@ -16,6 +16,9 @@ import { useFinancialSummary } from "@/hooks/useFinancialSummary";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import type { Transaction } from "@/pages/Dashboard";
 import { usePrivacy } from "@/contexts/PrivacyContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface MonthlyReportProps {
   transactions: Transaction[];
