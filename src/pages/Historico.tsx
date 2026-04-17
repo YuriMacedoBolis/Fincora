@@ -11,7 +11,7 @@ const Historico = () => {
   const { user } = useAuth();
 
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ["transactions", user?.id],
+    queryKey: ["transactions", user?.id, "all"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("transactions")
