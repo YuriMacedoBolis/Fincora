@@ -258,9 +258,12 @@ const Perfil = () => {
       if (error) throw error;
       await supabase.auth.signOut();
       toast.success("Sua conta foi excluída com sucesso.");
-      navigate("/login");
+      navigate("/", { replace: true });
     } catch (err: any) {
       toast.error("Erro ao excluir conta: " + (err.message || "Tente novamente."));
+      // Defensive fallback: ensure user lands on login page even if signOut/RPC partially failed
+      try { await supabase.auth.signOut(); } catch {}
+      navigate("/", { replace: true });
     }
   };
 
