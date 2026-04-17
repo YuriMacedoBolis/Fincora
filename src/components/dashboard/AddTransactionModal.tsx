@@ -57,9 +57,14 @@ const AddTransactionModal = ({ open, onOpenChange }: AddTransactionModalProps) =
       return;
     }
 
-    const parsedAmount = parseFloat(amount.replace(",", "."));
-    if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      toast.error("Insira um valor válido.");
+    // Sanitize: remove thousand separators (dots) when comma is decimal, then normalize comma to dot
+    const raw = amount.toString().trim();
+    const normalized = raw.includes(",")
+      ? raw.replace(/\./g, "").replace(",", ".")
+      : raw;
+    const sanitizedValue = parseFloat(normalized);
+    if (isNaN(sanitizedValue) || sanitizedValue <= 0) {
+      toast.error("Por favor, insira um valor numérico válido.");
       return;
     }
 
