@@ -31,6 +31,7 @@ const formatBRL = (value: number) =>
 
 const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: MonthlyReportProps) => {
   const { maskValue } = usePrivacy();
+  const { user } = useAuth();
   const [internalOpen, setInternalOpen] = useState(false);
   const isOpen = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
@@ -39,20 +40,30 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
 
   const { income, expenses, balance, monthlyTransactions } = useFinancialSummary(transactions);
 
-  // Previous month data
+  // Fetch previous month transactions from Supabase (current query is limited to current month)
+  const { data: prevMonthTx = [] } = useQuery({
+    queryKey: ["transactions-prev-month", user?.id],
+    queryFn: async () => {
+      const now = new Date();
+      const prevStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+      const prevEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999).toISOString();
+      const { data, error } = await supabase
+        .from("transactions")
+        .select("*")
+        .gte("created_at", prevStart)
+        .lte("created_at", prevEnd);
+      if (error) throw error;
+      return data as Transaction[];
+    },
+    enabled: !!user && isOpen,
+  });
+
+  // Previous month total expenses
   const prevMonthData = useMemo(() => {
-    const now = new Date();
-    const prevMonth = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
-    const prevYear = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
-    const prevTx = transactions.filter((t) => {
-      if (!t.created_at) return false;
-      const d = new Date(t.created_at);
-      return d.getMonth() === prevMonth && d.getFullYear() === prevYear;
-    });
-    return prevTx
+    return prevMonthTx
       .filter((t) => t.type === "saida")
       .reduce((s, t) => s + Math.abs(Number(t.amount)), 0);
-  }, [transactions]);
+  }, [prevMonthTx]);
 
   // Daily average spend
   const dailyAvg = useMemo(() => {
