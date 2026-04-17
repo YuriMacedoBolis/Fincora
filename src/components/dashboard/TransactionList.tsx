@@ -23,7 +23,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Transaction } from "@/pages/Dashboard";
+import type { Transaction } from "@/types";
 import { usePrivacy } from "@/contexts/PrivacyContext";
 
 interface TransactionListProps {

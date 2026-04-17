@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useFinancialSummary } from "@/hooks/useFinancialSummary";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import type { Transaction } from "@/pages/Dashboard";
+import type { Transaction } from "@/types";
 import { usePrivacy } from "@/contexts/PrivacyContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";

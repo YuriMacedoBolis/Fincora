@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import TransactionList from "@/components/dashboard/TransactionList";
-import type { Transaction } from "@/pages/Dashboard";
+import type { Transaction } from "@/types";
 
 const Historico = () => {
   const navigate = useNavigate();
