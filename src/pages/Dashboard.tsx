@@ -159,7 +159,9 @@ const Dashboard = () => {
         run={runTour}
         steps={tourSteps}
         continuous
-        onEvent={handleTourEvent}
+        showSkipButton
+        disableScrolling
+        callback={handleTourCallback}
         styles={joyrideStyles as any}
         options={{
           ...joyrideStyles.options,
@@ -177,9 +179,6 @@ const Dashboard = () => {
           skip: "Pular",
         }}
       />
-
-      {/* Report dialog controlled from bottom nav */}
-      <MonthlyReport transactions={transactions} open={reportOpen} onOpenChange={setReportOpen} />
 
       {/* Add transaction modal */}
       <AddTransactionModal open={addOpen} onOpenChange={setAddOpen} />
