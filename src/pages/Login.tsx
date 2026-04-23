@@ -18,11 +18,9 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  // Desktop sliding: which panel is active
   const [panelSide, setPanelSide] = useState<"left" | "right">("left");
   const navigate = useNavigate();
 
-  // Load remembered email on mount
   useEffect(() => {
     const saved = localStorage.getItem("fincare_remember_email");
     if (saved) {
@@ -33,11 +31,7 @@ const Login = () => {
 
   const switchTo = (target: FormMode) => {
     setMode(target);
-    if (target === "signup") {
-      setPanelSide("right");
-    } else {
-      setPanelSide("left");
-    }
+    setPanelSide(target === "signup" ? "right" : "left");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,11 +42,8 @@ const Login = () => {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
-      if (error) {
-        toast.error(error.message);
-      } else {
-        toast.success("Link de recuperação enviado para o seu e-mail!");
-      }
+      if (error) toast.error(error.message);
+      else toast.success("Link de recuperação enviado para o seu e-mail!");
       setLoading(false);
       return;
     }
@@ -70,10 +61,7 @@ const Login = () => {
           await supabase.from("profiles").update({ full_name: fullName }).eq("id", data.user.id);
         }
         if (data.user && !data.session) {
-          toast.success(
-            "Conta criada! 🧡 Verifique sua caixa de entrada para confirmar seu e-mail.",
-            { duration: 8000 },
-          );
+          toast.success("Conta criada! 🧡 Verifique sua caixa de entrada para confirmar seu e-mail.", { duration: 8000 });
           setPassword("");
           setFullName("");
           switchTo("login");
@@ -83,12 +71,8 @@ const Login = () => {
         }
       }
     } else {
-      // Login
-      if (rememberMe) {
-        localStorage.setItem("fincare_remember_email", email);
-      } else {
-        localStorage.removeItem("fincare_remember_email");
-      }
+      if (rememberMe) localStorage.setItem("fincare_remember_email", email);
+      else localStorage.removeItem("fincare_remember_email");
 
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
@@ -104,147 +88,41 @@ const Login = () => {
         navigate("/dashboard");
       }
     }
-
     setLoading(false);
   };
 
-  // ─── Shared form pieces ───
-
-  const emailField = (idSuffix = "") => (
-    <div className="space-y-2">
-      <Label htmlFor={`email${idSuffix}`} className="text-foreground">E-mail</Label>
-      <Input
-        id={`email${idSuffix}`}
-        type="email"
-        placeholder="seu@email.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="rounded-xl bg-secondary border-border"
-        required
-      />
-    </div>
-  );
-
-  const passwordField = (idSuffix = "") => (
-    <div className="space-y-2">
-      <Label htmlFor={`password${idSuffix}`} className="text-foreground">Senha</Label>
-      <div className="relative">
-        <Input
-          id={`password${idSuffix}`}
-          type={showPassword ? "text" : "password"}
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="rounded-xl bg-secondary border-border pr-10"
-          required
-          minLength={6}
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-        </button>
-      </div>
-    </div>
-  );
-
-  // ─── Desktop Login Form ───
-  const loginForm = (
-    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
-      <div className="text-center space-y-1 mb-2">
-        <h2 className="text-2xl font-bold text-foreground">Bem-vindo de volta!</h2>
-        <p className="text-muted-foreground text-sm">Entre na sua conta FinCare</p>
-      </div>
-      {emailField()}
-      {passwordField()}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Checkbox id="remember" checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} />
-          <Label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">Lembre de mim</Label>
-        </div>
-        <button type="button" onClick={() => switchTo("forgot")} className="text-sm text-primary hover:underline">
-          Esqueci a senha
-        </button>
-      </div>
-      <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
-        {loading ? "Carregando..." : "Entrar"}
-      </Button>
-      <p className="text-center text-sm text-muted-foreground md:hidden">
-        Não tem conta?{" "}
-        <button type="button" onClick={() => switchTo("signup")} className="text-primary font-medium hover:underline">Criar conta</button>
-      </p>
-    </form>
-  );
-
-  // ─── Desktop Signup Form ───
-  const signupForm = (
-    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
-      <div className="text-center space-y-1 mb-2">
-        <h2 className="text-2xl font-bold text-foreground">Crie sua conta</h2>
-        <p className="text-muted-foreground text-sm">Comece a controlar suas finanças</p>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="fullName" className="text-foreground">Nome</Label>
-        <Input id="fullName" type="text" placeholder="Seu nome completo" value={fullName} onChange={(e) => setFullName(e.target.value)} className="rounded-xl bg-secondary border-border" required />
-      </div>
-      {emailField()}
-      {passwordField()}
-      <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
-        {loading ? "Carregando..." : "Criar Conta"}
-      </Button>
-      <p className="text-center text-sm text-muted-foreground md:hidden">
-        Já tem conta?{" "}
-        <button type="button" onClick={() => switchTo("login")} className="text-primary font-medium hover:underline">Entrar</button>
-      </p>
-    </form>
-  );
-
-  // ─── Desktop Forgot Form ───
-  const forgotForm = (
-    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
-      <div className="text-center space-y-1 mb-2">
-        <h2 className="text-2xl font-bold text-foreground">Recuperar senha</h2>
-        <p className="text-muted-foreground text-sm">Enviaremos um link para seu e-mail</p>
-      </div>
-      {emailField()}
-      <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
-        {loading ? "Carregando..." : "Enviar Link"}
-      </Button>
-      <p className="text-center text-sm text-muted-foreground">
-        <button type="button" onClick={() => switchTo("login")} className="text-primary font-medium hover:underline">Voltar para o Login</button>
-      </p>
-    </form>
-  );
+  // ─── Light-themed input classes ───
+  const inputClass = "rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[#FF6400] focus:ring-[#FF6400]";
 
   const isFlipped = mode === "signup";
 
   // ─── MOBILE LAYOUT (< md) — 3D Card Flip, forced light theme ───
   const mobileLayout = (
-    <div className="flex md:hidden min-h-screen items-center justify-center px-6" style={{ background: "#F5F5F0" }}>
+    <div className="flex md:hidden min-h-screen items-center justify-center px-5 py-10 bg-[#F5F5F0]">
       <div className="w-full max-w-sm">
         {/* Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold tracking-tight" style={{ color: "#FF6400" }}>FinCare</h1>
-          <p className="text-sm mt-1" style={{ color: "#6B7280" }}>Gerencie suas finanças com inteligência</p>
+          <h1 className="text-4xl font-bold tracking-tight text-[#FF6400]">FinCare</h1>
+          <p className="text-sm mt-1 text-gray-500">Gerencie suas finanças com inteligência</p>
         </div>
 
         {/* 3D Flip Container */}
         {mode === "forgot" ? (
-          // Forgot password — no flip, just a simple card
-          <div className="rounded-2xl p-6 shadow-lg" style={{ background: "#FFFFFF" }}>
+          <div className="rounded-2xl p-8 shadow-lg bg-white">
             <form onSubmit={handleSubmit} className="space-y-5 w-full">
-              <div className="text-center space-y-1 mb-2">
-                <h2 className="text-2xl font-bold" style={{ color: "#111827" }}>Recuperar senha</h2>
-                <p className="text-sm" style={{ color: "#6B7280" }}>Enviaremos um link para seu e-mail</p>
+              <div className="text-center space-y-1 mb-4">
+                <h2 className="text-2xl font-bold text-gray-900">Recuperar senha</h2>
+                <p className="text-sm text-gray-500">Enviaremos um link para seu e-mail</p>
               </div>
-              {emailField("-mobile-forgot")}
-              <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
+              <div className="space-y-2">
+                <Label htmlFor="email-mf" className="text-gray-700">E-mail</Label>
+                <Input id="email-mf" type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} required />
+              </div>
+              <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
                 {loading ? "Carregando..." : "Enviar Link"}
               </Button>
-              <p className="text-center text-sm" style={{ color: "#6B7280" }}>
-                <button type="button" onClick={() => switchTo("login")} className="font-medium hover:underline" style={{ color: "#FF6400" }}>
+              <p className="text-center text-sm text-gray-500">
+                <button type="button" onClick={() => switchTo("login")} className="font-medium hover:underline text-[#FF6400]">
                   Voltar para o Login
                 </button>
               </p>
@@ -261,34 +139,42 @@ const Login = () => {
             >
               {/* ── FRONT: Login ── */}
               <div
-                className="w-full rounded-2xl p-6 shadow-lg"
-                style={{
-                  backfaceVisibility: "hidden",
-                  background: "#FFFFFF",
-                }}
+                className="w-full rounded-2xl p-8 shadow-lg bg-white"
+                style={{ backfaceVisibility: "hidden" }}
               >
                 <form onSubmit={handleSubmit} className="space-y-5 w-full">
-                  <div className="text-center space-y-1 mb-2">
-                    <h2 className="text-2xl font-bold" style={{ color: "#111827" }}>Bem-vindo de volta!</h2>
-                    <p className="text-sm" style={{ color: "#6B7280" }}>Entre na sua conta FinCare</p>
+                  <div className="text-center space-y-1 mb-4">
+                    <h2 className="text-2xl font-bold text-gray-900">Bem-vindo de volta!</h2>
+                    <p className="text-sm text-gray-500">Entre na sua conta FinCare</p>
                   </div>
-                  {emailField("-mobile-login")}
-                  {passwordField("-mobile-login")}
+                  <div className="space-y-2">
+                    <Label htmlFor="email-ml" className="text-gray-700">E-mail</Label>
+                    <Input id="email-ml" type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password-ml" className="text-gray-700">Senha</Label>
+                    <div className="relative">
+                      <Input id="password-ml" type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputClass} pr-10`} required minLength={6} />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Checkbox id="remember-mobile" checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} />
-                      <Label htmlFor="remember-mobile" className="text-sm cursor-pointer" style={{ color: "#6B7280" }}>Lembre de mim</Label>
+                      <Label htmlFor="remember-mobile" className="text-sm cursor-pointer text-gray-500">Lembre de mim</Label>
                     </div>
-                    <button type="button" onClick={() => switchTo("forgot")} className="text-sm hover:underline" style={{ color: "#FF6400" }}>
+                    <button type="button" onClick={() => switchTo("forgot")} className="text-sm hover:underline text-[#FF6400]">
                       Esqueci a senha
                     </button>
                   </div>
-                  <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
+                  <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
                     {loading ? "Carregando..." : "Entrar"}
                   </Button>
-                  <p className="text-center text-sm" style={{ color: "#6B7280" }}>
+                  <p className="text-center text-sm text-gray-500">
                     Não tem conta?{" "}
-                    <button type="button" onClick={() => switchTo("signup")} className="font-medium hover:underline" style={{ color: "#FF6400" }}>
+                    <button type="button" onClick={() => switchTo("signup")} className="font-medium hover:underline text-[#FF6400]">
                       Criar conta
                     </button>
                   </p>
@@ -297,30 +183,40 @@ const Login = () => {
 
               {/* ── BACK: Signup ── */}
               <div
-                className="w-full rounded-2xl p-6 shadow-lg absolute top-0 left-0"
+                className="w-full rounded-2xl p-8 shadow-lg bg-white absolute top-0 left-0"
                 style={{
                   backfaceVisibility: "hidden",
                   transform: "rotateY(180deg)",
-                  background: "#FFFFFF",
                 }}
               >
                 <form onSubmit={handleSubmit} className="space-y-5 w-full">
-                  <div className="text-center space-y-1 mb-2">
-                    <h2 className="text-2xl font-bold" style={{ color: "#111827" }}>Crie sua conta</h2>
-                    <p className="text-sm" style={{ color: "#6B7280" }}>Comece a controlar suas finanças</p>
+                  <div className="text-center space-y-1 mb-4">
+                    <h2 className="text-2xl font-bold text-gray-900">Crie sua conta</h2>
+                    <p className="text-sm text-gray-500">Comece a controlar suas finanças</p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="fullName-mobile" style={{ color: "#111827" }}>Nome</Label>
-                    <Input id="fullName-mobile" type="text" placeholder="Seu nome completo" value={fullName} onChange={(e) => setFullName(e.target.value)} className="rounded-xl bg-secondary border-border" required />
+                    <Label htmlFor="fullName-mobile" className="text-gray-700">Nome</Label>
+                    <Input id="fullName-mobile" type="text" placeholder="Seu nome completo" value={fullName} onChange={(e) => setFullName(e.target.value)} className={inputClass} required />
                   </div>
-                  {emailField("-mobile-signup")}
-                  {passwordField("-mobile-signup")}
-                  <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
+                  <div className="space-y-2">
+                    <Label htmlFor="email-ms" className="text-gray-700">E-mail</Label>
+                    <Input id="email-ms" type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password-ms" className="text-gray-700">Senha</Label>
+                    <div className="relative">
+                      <Input id="password-ms" type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputClass} pr-10`} required minLength={6} />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
+                  <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
                     {loading ? "Carregando..." : "Criar Conta"}
                   </Button>
-                  <p className="text-center text-sm" style={{ color: "#6B7280" }}>
+                  <p className="text-center text-sm text-gray-500">
                     Já tem conta?{" "}
-                    <button type="button" onClick={() => switchTo("login")} className="font-medium hover:underline" style={{ color: "#FF6400" }}>
+                    <button type="button" onClick={() => switchTo("login")} className="font-medium hover:underline text-[#FF6400]">
                       Entrar
                     </button>
                   </p>
@@ -332,14 +228,92 @@ const Login = () => {
       </div>
     </div>
   );
+
+  // ─── Desktop form helpers (use design system tokens) ───
+  const emailField = (idSuffix = "") => (
+    <div className="space-y-2">
+      <Label htmlFor={`email${idSuffix}`} className="text-gray-700">E-mail</Label>
+      <Input id={`email${idSuffix}`} type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} required />
+    </div>
+  );
+
+  const passwordField = (idSuffix = "") => (
+    <div className="space-y-2">
+      <Label htmlFor={`password${idSuffix}`} className="text-gray-700">Senha</Label>
+      <div className="relative">
+        <Input id={`password${idSuffix}`} type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputClass} pr-10`} required minLength={6} />
+        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+        </button>
+      </div>
+    </div>
+  );
+
+  // ─── Desktop Forms ───
+  const loginForm = (
+    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
+      <div className="text-center space-y-1 mb-2">
+        <h2 className="text-2xl font-bold text-gray-900">Bem-vindo de volta!</h2>
+        <p className="text-gray-500 text-sm">Entre na sua conta FinCare</p>
+      </div>
+      {emailField()}
+      {passwordField()}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <Checkbox id="remember" checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} />
+          <Label htmlFor="remember" className="text-sm text-gray-500 cursor-pointer">Lembre de mim</Label>
+        </div>
+        <button type="button" onClick={() => switchTo("forgot")} className="text-sm text-[#FF6400] hover:underline">
+          Esqueci a senha
+        </button>
+      </div>
+      <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
+        {loading ? "Carregando..." : "Entrar"}
+      </Button>
+    </form>
+  );
+
+  const signupForm = (
+    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
+      <div className="text-center space-y-1 mb-2">
+        <h2 className="text-2xl font-bold text-gray-900">Crie sua conta</h2>
+        <p className="text-gray-500 text-sm">Comece a controlar suas finanças</p>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="fullName" className="text-gray-700">Nome</Label>
+        <Input id="fullName" type="text" placeholder="Seu nome completo" value={fullName} onChange={(e) => setFullName(e.target.value)} className={inputClass} required />
+      </div>
+      {emailField()}
+      {passwordField()}
+      <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
+        {loading ? "Carregando..." : "Criar Conta"}
+      </Button>
+    </form>
+  );
+
+  const forgotForm = (
+    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
+      <div className="text-center space-y-1 mb-2">
+        <h2 className="text-2xl font-bold text-gray-900">Recuperar senha</h2>
+        <p className="text-gray-500 text-sm">Enviaremos um link para seu e-mail</p>
+      </div>
+      {emailField()}
+      <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
+        {loading ? "Carregando..." : "Enviar Link"}
+      </Button>
+      <p className="text-center text-sm text-gray-500">
+        <button type="button" onClick={() => switchTo("login")} className="font-medium hover:underline text-[#FF6400]">Voltar para o Login</button>
+      </p>
+    </form>
+  );
+
   // ─── DESKTOP LAYOUT (>= md) ───
   const desktopLayout = (
-    <div className="hidden md:flex min-h-screen items-center justify-center bg-background p-8">
-      <div className="relative w-full max-w-4xl h-[560px] rounded-3xl overflow-hidden shadow-2xl flex bg-card">
+    <div className="hidden md:flex min-h-screen items-center justify-center bg-[#F5F5F0] p-8">
+      <div className="relative w-full max-w-4xl h-[560px] rounded-3xl overflow-hidden shadow-2xl flex bg-white">
         
-        {/* ── Form containers (both always rendered, layered) ── */}
+        {/* ── Form containers ── */}
         <div className="relative w-full flex">
-          {/* Login form - left half */}
           <div
             className={`absolute inset-0 w-1/2 flex items-center justify-center p-10 transition-all duration-700 ease-in-out ${
               panelSide === "left"
@@ -350,7 +324,6 @@ const Login = () => {
             {mode === "forgot" ? forgotForm : loginForm}
           </div>
 
-          {/* Signup form - right half */}
           <div
             className={`absolute inset-0 w-1/2 flex items-center justify-center p-10 transition-all duration-700 ease-in-out ${
               panelSide === "right"
@@ -367,7 +340,7 @@ const Login = () => {
           className={`absolute top-0 w-1/2 h-full z-20 transition-transform duration-700 ease-in-out ${
             panelSide === "left" ? "translate-x-full" : "translate-x-0"
           }`}
-          style={{ background: "hsl(24, 100%, 50%)" }}
+          style={{ background: "#FF6400" }}
         >
           <div className="flex flex-col items-center justify-center h-full text-white px-12 text-center">
             <h1 className="text-4xl font-bold mb-4 tracking-tight">FinCare</h1>
@@ -379,7 +352,7 @@ const Login = () => {
                 </p>
                 <Button
                   variant="outline"
-                  className="rounded-xl border-2 border-white text-white bg-transparent hover:bg-white hover:text-primary font-semibold px-8 h-12"
+                  className="rounded-xl border-2 border-white text-white bg-transparent hover:bg-white hover:text-[#FF6400] font-semibold px-8 h-12"
                   onClick={() => switchTo("signup")}
                 >
                   Criar Conta
@@ -393,7 +366,7 @@ const Login = () => {
                 </p>
                 <Button
                   variant="outline"
-                  className="rounded-xl border-2 border-white text-white bg-transparent hover:bg-white hover:text-primary font-semibold px-8 h-12"
+                  className="rounded-xl border-2 border-white text-white bg-transparent hover:bg-white hover:text-[#FF6400] font-semibold px-8 h-12"
                   onClick={() => switchTo("login")}
                 >
                   Entrar
