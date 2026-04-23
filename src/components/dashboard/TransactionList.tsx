@@ -182,7 +182,16 @@ const TransactionList = ({ transactions, showFilters = true }: TransactionListPr
             </div>
             <div className="space-y-2">
               <Label>Categoria</Label>
-              <Input value={editCategory} onChange={(e) => setEditCategory(e.target.value)} />
+              <Select value={editCategory} onValueChange={setEditCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione uma categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  {allCategories.map((cat) => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <Button type="submit" className="w-full">Salvar</Button>
           </form>
