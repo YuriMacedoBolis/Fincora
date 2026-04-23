@@ -99,7 +99,7 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <main className="px-5 py-6 space-y-6 max-w-lg mx-auto">
+      <main className="px-4 md:px-8 py-6 space-y-6 max-w-7xl mx-auto w-full">
         {isLoading ? (
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
