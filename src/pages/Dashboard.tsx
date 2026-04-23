@@ -81,25 +81,25 @@ const Dashboard = () => {
           <div className="hidden md:block">
             <MonthlyReport transactions={transactions} />
           </div>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setAddOpen(true)} title="Lançamento Manual">
-            <PlusCircle className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex h-11 w-11" onClick={() => setAddOpen(true)} title="Lançamento Manual">
+            <PlusCircle className="w-7 h-7" />
           </Button>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/analise")} title="Análise">
-            <BarChart3 className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex h-11 w-11" onClick={() => navigate("/analise")} title="Análise">
+            <BarChart3 className="w-7 h-7" />
           </Button>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/perfil")}>
-            <User className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex h-11 w-11" onClick={() => navigate("/perfil")}>
+            <User className="w-7 h-7" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={togglePrivacy} title={privacyMode ? "Mostrar valores" : "Ocultar valores"}>
-            {privacyMode ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+          <Button variant="ghost" size="icon" className="h-11 w-11" onClick={togglePrivacy} title={privacyMode ? "Mostrar valores" : "Ocultar valores"}>
+            {privacyMode ? <EyeOff className="w-7 h-7" /> : <Eye className="w-7 h-7" />}
           </Button>
-          <Button variant="ghost" size="icon" onClick={handleLogout}>
-            <LogOut className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="h-11 w-11" onClick={handleLogout}>
+            <LogOut className="w-7 h-7" />
           </Button>
         </div>
       </header>
 
-      <main className="px-5 py-6 space-y-6 max-w-lg mx-auto">
+      <main className="px-4 md:px-8 py-6 space-y-6 max-w-7xl mx-auto w-full">
         {isLoading ? (
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -119,9 +119,9 @@ const Dashboard = () => {
       {/* Floating chat button: only on desktop */}
       <button
         onClick={() => navigate("/chat")}
-        className="hidden md:flex fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg shadow-primary/30 hover:scale-105 transition-transform items-center justify-center"
+        className="hidden md:flex fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-5 shadow-lg shadow-primary/30 hover:scale-105 transition-transform items-center justify-center"
       >
-        <MessageCircle className="w-6 h-6" />
+        <MessageCircle className="w-7 h-7" />
       </button>
 
       {/* Bottom nav: only on mobile */}

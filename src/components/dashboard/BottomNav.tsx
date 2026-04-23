@@ -43,8 +43,8 @@ const BottomNav = () => {
             onClick={() => setReportOpen(true)}
             className="flex flex-col items-center gap-1 py-2 px-3 text-muted-foreground hover:text-foreground transition-colors"
           >
-            <FileText className="w-5 h-5" />
-            <span className="text-[10px] font-medium">Relatório</span>
+            <FileText className="w-7 h-7" />
+            <span className="text-[11px] font-medium">Relatório</span>
           </button>
 
           {/* Adicionar */}
@@ -52,16 +52,16 @@ const BottomNav = () => {
             onClick={() => setAddOpen(true)}
             className="flex flex-col items-center gap-1 py-2 px-3 text-muted-foreground hover:text-foreground transition-colors"
           >
-            <PlusCircle className="w-5 h-5" />
-            <span className="text-[10px] font-medium">Adicionar</span>
+            <PlusCircle className="w-7 h-7" />
+            <span className="text-[11px] font-medium">Adicionar</span>
           </button>
 
           {/* Chat — elevated center button */}
           <button
             onClick={() => navigate("/chat")}
-            className="relative -top-4 flex items-center justify-center w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:scale-105 transition-transform"
+            className="relative -top-4 flex items-center justify-center w-16 h-16 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:scale-105 transition-transform"
           >
-            <MessageCircle className="w-6 h-6" />
+            <MessageCircle className="w-7 h-7" />
           </button>
 
           {/* Análise */}
@@ -69,8 +69,8 @@ const BottomNav = () => {
             onClick={() => navigate("/analise")}
             className={`flex flex-col items-center gap-1 py-2 px-3 transition-colors ${isActive("/analise") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
           >
-            <BarChart3 className="w-5 h-5" />
-            <span className="text-[10px] font-medium">Análise</span>
+            <BarChart3 className="w-7 h-7" />
+            <span className="text-[11px] font-medium">Análise</span>
           </button>
 
           {/* Perfil */}
@@ -78,8 +78,8 @@ const BottomNav = () => {
             onClick={() => navigate("/perfil")}
             className={`flex flex-col items-center gap-1 py-2 px-3 transition-colors ${isActive("/perfil") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
           >
-            <User className="w-5 h-5" />
-            <span className="text-[10px] font-medium">Perfil</span>
+            <User className="w-7 h-7" />
+            <span className="text-[11px] font-medium">Perfil</span>
           </button>
         </div>
       </nav>
