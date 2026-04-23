@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Pencil, LogOut, Trash2, AlertTriangle, ChevronRight, Moon, Plus, X, RotateCcw } from "lucide-react";
+import { ArrowLeft, Pencil, LogOut, Trash2, AlertTriangle, ChevronRight, Moon, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { HIDE_KEY } from "@/components/dashboard/OnboardingTour";
+
 
 const CATEGORIES_DEFAULT = ["Alimentação", "Transporte", "Moradia", "Lazer", "Saúde", "Educação", "Compras", "Assinaturas", "Investimentos", "Quitação de Dívidas", "Salário", "Freelance", "Rendimentos", "Outros"];
 
@@ -498,19 +498,6 @@ const Perfil = () => {
           Sair da conta
         </Button>
 
-        {/* Rever Tutorial */}
-        <Button
-          variant="outline"
-          className="w-full gap-2 text-sm"
-          onClick={() => {
-            localStorage.removeItem(HIDE_KEY);
-            toast.success("Tutorial resetado! Volte ao Dashboard para revê-lo.");
-            navigate("/dashboard");
-          }}
-        >
-          <RotateCcw className="w-4 h-4" />
-          Rever Tutorial
-        </Button>
 
         {/* Danger Zone */}
         <Card className="border-destructive/40 bg-destructive/5">
