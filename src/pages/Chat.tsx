@@ -13,7 +13,7 @@ interface Message {
   isError?: boolean;
 }
 
-const WEBHOOK_URL = "https://en8n.mibagencia.com.br/webhook/fincora-chat";
+const WEBHOOK_URL = "https://n8n-self.duckdns.org/webhook/fincora-chat";
 
 const defaultMessage: Message = {
   id: 0,
