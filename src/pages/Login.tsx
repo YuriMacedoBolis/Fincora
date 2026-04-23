@@ -92,7 +92,7 @@ const Login = () => {
   };
 
   // ─── Light-themed input classes ───
-  const inputClass = "rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-[#FF6400] focus:ring-[#FF6400]";
+  const inputClass = "rounded-xl bg-gray-50 border border-gray-200 text-[#003320] placeholder:text-[#1a5c3a] focus:border-[#FF6400] focus:ring-[#FF6400]";
 
   const isFlipped = mode === "signup";
 
@@ -103,7 +103,7 @@ const Login = () => {
         {/* Brand */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold tracking-tight text-[#FF6400]">FinCare</h1>
-          <p className="text-sm mt-1 text-gray-500">Gerencie suas finanças com inteligência</p>
+          <p className="text-sm mt-1 text-[#1a5c3a]">Gerencie suas finanças com inteligência</p>
         </div>
 
         {/* 3D Flip Container */}
@@ -111,17 +111,17 @@ const Login = () => {
           <div className="rounded-2xl p-8 shadow-lg bg-white">
             <form onSubmit={handleSubmit} className="space-y-5 w-full">
               <div className="text-center space-y-1 mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">Recuperar senha</h2>
-                <p className="text-sm text-gray-500">Enviaremos um link para seu e-mail</p>
+                <h2 className="text-2xl font-bold text-[#003320]">Recuperar senha</h2>
+                <p className="text-sm text-[#1a5c3a]">Enviaremos um link para seu e-mail</p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email-mf" className="text-gray-700">E-mail</Label>
+                <Label htmlFor="email-mf" className="text-[#003320]">E-mail</Label>
                 <Input id="email-mf" type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} required />
               </div>
               <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
                 {loading ? "Carregando..." : "Enviar Link"}
               </Button>
-              <p className="text-center text-sm text-gray-500">
+              <p className="text-center text-sm text-[#1a5c3a]">
                 <button type="button" onClick={() => switchTo("login")} className="font-medium hover:underline text-[#FF6400]">
                   Voltar para o Login
                 </button>
@@ -144,18 +144,18 @@ const Login = () => {
               >
                 <form onSubmit={handleSubmit} className="space-y-5 w-full">
                   <div className="text-center space-y-1 mb-4">
-                    <h2 className="text-2xl font-bold text-gray-900">Bem-vindo de volta!</h2>
-                    <p className="text-sm text-gray-500">Entre na sua conta FinCare</p>
+                    <h2 className="text-2xl font-bold text-[#003320]">Bem-vindo de volta!</h2>
+                    <p className="text-sm text-[#1a5c3a]">Entre na sua conta FinCare</p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email-ml" className="text-gray-700">E-mail</Label>
+                    <Label htmlFor="email-ml" className="text-[#003320]">E-mail</Label>
                     <Input id="email-ml" type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} required />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password-ml" className="text-gray-700">Senha</Label>
+                    <Label htmlFor="password-ml" className="text-[#003320]">Senha</Label>
                     <div className="relative">
                       <Input id="password-ml" type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputClass} pr-10`} required minLength={6} />
-                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1a5c3a] hover:text-[#003320] transition-colors">
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                     </div>
@@ -163,7 +163,7 @@ const Login = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Checkbox id="remember-mobile" checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} />
-                      <Label htmlFor="remember-mobile" className="text-sm cursor-pointer text-gray-500">Lembre de mim</Label>
+                      <Label htmlFor="remember-mobile" className="text-sm cursor-pointer text-[#1a5c3a]">Lembre de mim</Label>
                     </div>
                     <button type="button" onClick={() => switchTo("forgot")} className="text-sm hover:underline text-[#FF6400]">
                       Esqueci a senha
@@ -172,7 +172,7 @@ const Login = () => {
                   <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
                     {loading ? "Carregando..." : "Entrar"}
                   </Button>
-                  <p className="text-center text-sm text-gray-500">
+                  <p className="text-center text-sm text-[#1a5c3a]">
                     Não tem conta?{" "}
                     <button type="button" onClick={() => switchTo("signup")} className="font-medium hover:underline text-[#FF6400]">
                       Criar conta
@@ -191,22 +191,22 @@ const Login = () => {
               >
                 <form onSubmit={handleSubmit} className="space-y-5 w-full">
                   <div className="text-center space-y-1 mb-4">
-                    <h2 className="text-2xl font-bold text-gray-900">Crie sua conta</h2>
-                    <p className="text-sm text-gray-500">Comece a controlar suas finanças</p>
+                    <h2 className="text-2xl font-bold text-[#003320]">Crie sua conta</h2>
+                    <p className="text-sm text-[#1a5c3a]">Comece a controlar suas finanças</p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="fullName-mobile" className="text-gray-700">Nome</Label>
+                    <Label htmlFor="fullName-mobile" className="text-[#003320]">Nome</Label>
                     <Input id="fullName-mobile" type="text" placeholder="Seu nome completo" value={fullName} onChange={(e) => setFullName(e.target.value)} className={inputClass} required />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email-ms" className="text-gray-700">E-mail</Label>
+                    <Label htmlFor="email-ms" className="text-[#003320]">E-mail</Label>
                     <Input id="email-ms" type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} required />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password-ms" className="text-gray-700">Senha</Label>
+                    <Label htmlFor="password-ms" className="text-[#003320]">Senha</Label>
                     <div className="relative">
                       <Input id="password-ms" type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputClass} pr-10`} required minLength={6} />
-                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1a5c3a] hover:text-[#003320] transition-colors">
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                     </div>
@@ -214,7 +214,7 @@ const Login = () => {
                   <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
                     {loading ? "Carregando..." : "Criar Conta"}
                   </Button>
-                  <p className="text-center text-sm text-gray-500">
+                  <p className="text-center text-sm text-[#1a5c3a]">
                     Já tem conta?{" "}
                     <button type="button" onClick={() => switchTo("login")} className="font-medium hover:underline text-[#FF6400]">
                       Entrar
@@ -232,17 +232,17 @@ const Login = () => {
   // ─── Desktop form helpers (use design system tokens) ───
   const emailField = (idSuffix = "") => (
     <div className="space-y-2">
-      <Label htmlFor={`email${idSuffix}`} className="text-gray-700">E-mail</Label>
+      <Label htmlFor={`email${idSuffix}`} className="text-[#003320]">E-mail</Label>
       <Input id={`email${idSuffix}`} type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} required />
     </div>
   );
 
   const passwordField = (idSuffix = "") => (
     <div className="space-y-2">
-      <Label htmlFor={`password${idSuffix}`} className="text-gray-700">Senha</Label>
+      <Label htmlFor={`password${idSuffix}`} className="text-[#003320]">Senha</Label>
       <div className="relative">
         <Input id={`password${idSuffix}`} type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputClass} pr-10`} required minLength={6} />
-        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1a5c3a] hover:text-[#003320] transition-colors">
           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
       </div>
@@ -253,15 +253,15 @@ const Login = () => {
   const loginForm = (
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
       <div className="text-center space-y-1 mb-2">
-        <h2 className="text-2xl font-bold text-gray-900">Bem-vindo de volta!</h2>
-        <p className="text-gray-500 text-sm">Entre na sua conta FinCare</p>
+        <h2 className="text-2xl font-bold text-[#003320]">Bem-vindo de volta!</h2>
+        <p className="text-[#1a5c3a] text-sm">Entre na sua conta FinCare</p>
       </div>
       {emailField()}
       {passwordField()}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Checkbox id="remember" checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} />
-          <Label htmlFor="remember" className="text-sm text-gray-500 cursor-pointer">Lembre de mim</Label>
+          <Label htmlFor="remember" className="text-sm text-[#1a5c3a] cursor-pointer">Lembre de mim</Label>
         </div>
         <button type="button" onClick={() => switchTo("forgot")} className="text-sm text-[#FF6400] hover:underline">
           Esqueci a senha
@@ -276,11 +276,11 @@ const Login = () => {
   const signupForm = (
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
       <div className="text-center space-y-1 mb-2">
-        <h2 className="text-2xl font-bold text-gray-900">Crie sua conta</h2>
-        <p className="text-gray-500 text-sm">Comece a controlar suas finanças</p>
+        <h2 className="text-2xl font-bold text-[#003320]">Crie sua conta</h2>
+        <p className="text-[#1a5c3a] text-sm">Comece a controlar suas finanças</p>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="fullName" className="text-gray-700">Nome</Label>
+        <Label htmlFor="fullName" className="text-[#003320]">Nome</Label>
         <Input id="fullName" type="text" placeholder="Seu nome completo" value={fullName} onChange={(e) => setFullName(e.target.value)} className={inputClass} required />
       </div>
       {emailField()}
@@ -294,14 +294,14 @@ const Login = () => {
   const forgotForm = (
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
       <div className="text-center space-y-1 mb-2">
-        <h2 className="text-2xl font-bold text-gray-900">Recuperar senha</h2>
-        <p className="text-gray-500 text-sm">Enviaremos um link para seu e-mail</p>
+        <h2 className="text-2xl font-bold text-[#003320]">Recuperar senha</h2>
+        <p className="text-[#1a5c3a] text-sm">Enviaremos um link para seu e-mail</p>
       </div>
       {emailField()}
       <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
         {loading ? "Carregando..." : "Enviar Link"}
       </Button>
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-[#1a5c3a]">
         <button type="button" onClick={() => switchTo("login")} className="font-medium hover:underline text-[#FF6400]">Voltar para o Login</button>
       </p>
     </form>
