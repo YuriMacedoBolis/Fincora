@@ -81,20 +81,20 @@ const Dashboard = () => {
           <div className="hidden md:block">
             <MonthlyReport transactions={transactions} />
           </div>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setAddOpen(true)} title="Lançamento Manual">
-            <PlusCircle className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex h-11 w-11" onClick={() => setAddOpen(true)} title="Lançamento Manual">
+            <PlusCircle className="w-7 h-7" />
           </Button>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/analise")} title="Análise">
-            <BarChart3 className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex h-11 w-11" onClick={() => navigate("/analise")} title="Análise">
+            <BarChart3 className="w-7 h-7" />
           </Button>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => navigate("/perfil")}>
-            <User className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex h-11 w-11" onClick={() => navigate("/perfil")}>
+            <User className="w-7 h-7" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={togglePrivacy} title={privacyMode ? "Mostrar valores" : "Ocultar valores"}>
-            {privacyMode ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+          <Button variant="ghost" size="icon" className="h-11 w-11" onClick={togglePrivacy} title={privacyMode ? "Mostrar valores" : "Ocultar valores"}>
+            {privacyMode ? <EyeOff className="w-7 h-7" /> : <Eye className="w-7 h-7" />}
           </Button>
-          <Button variant="ghost" size="icon" onClick={handleLogout}>
-            <LogOut className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="h-11 w-11" onClick={handleLogout}>
+            <LogOut className="w-7 h-7" />
           </Button>
         </div>
       </header>
