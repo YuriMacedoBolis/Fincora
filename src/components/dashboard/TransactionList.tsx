@@ -39,9 +39,22 @@ const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const TransactionList = ({ transactions, showFilters = true }: TransactionListProps) => {
+  const { user } = useAuth();
   const { maskValue } = usePrivacy();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const { data: customCats = [] } = useQuery({
+    queryKey: ["categories", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("categories").select("name").eq("user_id", user!.id);
+      if (error) throw error;
+      return data.map((c) => c.name);
+    },
+    enabled: !!user,
+  });
+  const allCategories = [...CATEGORIES_DEFAULT, ...customCats];
+
   const [editTx, setEditTx] = useState<Transaction | null>(null);
   const [deleteTxId, setDeleteTxId] = useState<string | null>(null);
   const [editDesc, setEditDesc] = useState("");
