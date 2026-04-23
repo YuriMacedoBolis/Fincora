@@ -119,9 +119,9 @@ const Dashboard = () => {
       {/* Floating chat button: only on desktop */}
       <button
         onClick={() => navigate("/chat")}
-        className="hidden md:flex fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg shadow-primary/30 hover:scale-105 transition-transform items-center justify-center"
+        className="hidden md:flex fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-5 shadow-lg shadow-primary/30 hover:scale-105 transition-transform items-center justify-center"
       >
-        <MessageCircle className="w-6 h-6" />
+        <MessageCircle className="w-7 h-7" />
       </button>
 
       {/* Bottom nav: only on mobile */}
