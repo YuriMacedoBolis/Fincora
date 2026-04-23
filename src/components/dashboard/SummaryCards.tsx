@@ -13,9 +13,9 @@ const formatBRL = (value: number) =>
 const SummaryCards = ({ income, expenses, balance }: SummaryCardsProps) => {
   const { maskValue } = usePrivacy();
   const cards = [
+    { title: "Saldo do Mês", value: maskValue(formatBRL(balance)), icon: Wallet, colorClass: "text-primary", bgClass: "bg-primary/10" },
     { title: "Receitas", value: maskValue(formatBRL(income)), icon: TrendingUp, colorClass: "text-success", bgClass: "bg-success/10" },
     { title: "Despesas", value: maskValue(formatBRL(expenses)), icon: TrendingDown, colorClass: "text-warning", bgClass: "bg-warning/10" },
-    { title: "Saldo do Mês", value: maskValue(formatBRL(balance)), icon: Wallet, colorClass: "text-primary", bgClass: "bg-primary/10" },
   ];
 
   return (
