@@ -110,11 +110,11 @@ const Login = () => {
 
   // ─── Shared form pieces ───
 
-  const emailField = (
+  const emailField = (idSuffix = "") => (
     <div className="space-y-2">
-      <Label htmlFor="email" className="text-foreground">E-mail</Label>
+      <Label htmlFor={`email${idSuffix}`} className="text-foreground">E-mail</Label>
       <Input
-        id="email"
+        id={`email${idSuffix}`}
         type="email"
         placeholder="seu@email.com"
         value={email}
@@ -125,12 +125,12 @@ const Login = () => {
     </div>
   );
 
-  const passwordField = (
+  const passwordField = (idSuffix = "") => (
     <div className="space-y-2">
-      <Label htmlFor="password" className="text-foreground">Senha</Label>
+      <Label htmlFor={`password${idSuffix}`} className="text-foreground">Senha</Label>
       <div className="relative">
         <Input
-          id="password"
+          id={`password${idSuffix}`}
           type={showPassword ? "text" : "password"}
           placeholder="••••••••"
           value={password}
@@ -150,50 +150,35 @@ const Login = () => {
     </div>
   );
 
-  // ─── Login Form ───
-
+  // ─── Desktop Login Form ───
   const loginForm = (
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
       <div className="text-center space-y-1 mb-2">
         <h2 className="text-2xl font-bold text-foreground">Bem-vindo de volta!</h2>
         <p className="text-muted-foreground text-sm">Entre na sua conta FinCare</p>
       </div>
-      {emailField}
-      {passwordField}
+      {emailField()}
+      {passwordField()}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Checkbox
-            id="remember"
-            checked={rememberMe}
-            onCheckedChange={(v) => setRememberMe(v === true)}
-          />
-          <Label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
-            Lembre de mim
-          </Label>
+          <Checkbox id="remember" checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} />
+          <Label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">Lembre de mim</Label>
         </div>
-        <button
-          type="button"
-          onClick={() => switchTo("forgot")}
-          className="text-sm text-primary hover:underline"
-        >
+        <button type="button" onClick={() => switchTo("forgot")} className="text-sm text-primary hover:underline">
           Esqueci a senha
         </button>
       </div>
       <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
         {loading ? "Carregando..." : "Entrar"}
       </Button>
-      {/* Mobile-only toggle */}
       <p className="text-center text-sm text-muted-foreground md:hidden">
         Não tem conta?{" "}
-        <button type="button" onClick={() => switchTo("signup")} className="text-primary font-medium hover:underline">
-          Criar conta
-        </button>
+        <button type="button" onClick={() => switchTo("signup")} className="text-primary font-medium hover:underline">Criar conta</button>
       </p>
     </form>
   );
 
-  // ─── Signup Form ───
-
+  // ─── Desktop Signup Form ───
   const signupForm = (
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
       <div className="text-center space-y-1 mb-2">
@@ -202,74 +187,151 @@ const Login = () => {
       </div>
       <div className="space-y-2">
         <Label htmlFor="fullName" className="text-foreground">Nome</Label>
-        <Input
-          id="fullName"
-          type="text"
-          placeholder="Seu nome completo"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          className="rounded-xl bg-secondary border-border"
-          required
-        />
+        <Input id="fullName" type="text" placeholder="Seu nome completo" value={fullName} onChange={(e) => setFullName(e.target.value)} className="rounded-xl bg-secondary border-border" required />
       </div>
-      {emailField}
-      {passwordField}
+      {emailField()}
+      {passwordField()}
       <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
         {loading ? "Carregando..." : "Criar Conta"}
       </Button>
-      {/* Mobile-only toggle */}
       <p className="text-center text-sm text-muted-foreground md:hidden">
         Já tem conta?{" "}
-        <button type="button" onClick={() => switchTo("login")} className="text-primary font-medium hover:underline">
-          Entrar
-        </button>
+        <button type="button" onClick={() => switchTo("login")} className="text-primary font-medium hover:underline">Entrar</button>
       </p>
     </form>
   );
 
-  // ─── Forgot Form ───
-
+  // ─── Desktop Forgot Form ───
   const forgotForm = (
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
       <div className="text-center space-y-1 mb-2">
         <h2 className="text-2xl font-bold text-foreground">Recuperar senha</h2>
         <p className="text-muted-foreground text-sm">Enviaremos um link para seu e-mail</p>
       </div>
-      {emailField}
+      {emailField()}
       <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
         {loading ? "Carregando..." : "Enviar Link"}
       </Button>
       <p className="text-center text-sm text-muted-foreground">
-        <button type="button" onClick={() => switchTo("login")} className="text-primary font-medium hover:underline">
-          Voltar para o Login
-        </button>
+        <button type="button" onClick={() => switchTo("login")} className="text-primary font-medium hover:underline">Voltar para o Login</button>
       </p>
     </form>
   );
 
-  // Current active form for rendering
-  const activeForm = mode === "signup" ? signupForm : mode === "forgot" ? forgotForm : loginForm;
+  const isFlipped = mode === "signup";
 
-  // ─── MOBILE LAYOUT (< md) ───
+  // ─── MOBILE LAYOUT (< md) — 3D Card Flip, forced light theme ───
   const mobileLayout = (
-    <div className="flex md:hidden min-h-screen items-center justify-center px-6 bg-background">
+    <div className="flex md:hidden min-h-screen items-center justify-center px-6" style={{ background: "#F5F5F0" }}>
       <div className="w-full max-w-sm">
         {/* Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary tracking-tight">FinCare</h1>
-          <p className="text-muted-foreground text-sm mt-1">Gerencie suas finanças com inteligência</p>
+          <h1 className="text-4xl font-bold tracking-tight" style={{ color: "#FF6400" }}>FinCare</h1>
+          <p className="text-sm mt-1" style={{ color: "#6B7280" }}>Gerencie suas finanças com inteligência</p>
         </div>
-        {/* Form with fade transition */}
-        <div
-          key={mode}
-          className="animate-fade-in glass rounded-2xl p-6"
-        >
-          {activeForm}
-        </div>
+
+        {/* 3D Flip Container */}
+        {mode === "forgot" ? (
+          // Forgot password — no flip, just a simple card
+          <div className="rounded-2xl p-6 shadow-lg" style={{ background: "#FFFFFF" }}>
+            <form onSubmit={handleSubmit} className="space-y-5 w-full">
+              <div className="text-center space-y-1 mb-2">
+                <h2 className="text-2xl font-bold" style={{ color: "#111827" }}>Recuperar senha</h2>
+                <p className="text-sm" style={{ color: "#6B7280" }}>Enviaremos um link para seu e-mail</p>
+              </div>
+              {emailField("-mobile-forgot")}
+              <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
+                {loading ? "Carregando..." : "Enviar Link"}
+              </Button>
+              <p className="text-center text-sm" style={{ color: "#6B7280" }}>
+                <button type="button" onClick={() => switchTo("login")} className="font-medium hover:underline" style={{ color: "#FF6400" }}>
+                  Voltar para o Login
+                </button>
+              </p>
+            </form>
+          </div>
+        ) : (
+          <div className="relative w-full" style={{ perspective: "1200px" }}>
+            <div
+              className="relative w-full transition-transform duration-700 ease-in-out"
+              style={{
+                transformStyle: "preserve-3d",
+                transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+              }}
+            >
+              {/* ── FRONT: Login ── */}
+              <div
+                className="w-full rounded-2xl p-6 shadow-lg"
+                style={{
+                  backfaceVisibility: "hidden",
+                  background: "#FFFFFF",
+                }}
+              >
+                <form onSubmit={handleSubmit} className="space-y-5 w-full">
+                  <div className="text-center space-y-1 mb-2">
+                    <h2 className="text-2xl font-bold" style={{ color: "#111827" }}>Bem-vindo de volta!</h2>
+                    <p className="text-sm" style={{ color: "#6B7280" }}>Entre na sua conta FinCare</p>
+                  </div>
+                  {emailField("-mobile-login")}
+                  {passwordField("-mobile-login")}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="remember-mobile" checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} />
+                      <Label htmlFor="remember-mobile" className="text-sm cursor-pointer" style={{ color: "#6B7280" }}>Lembre de mim</Label>
+                    </div>
+                    <button type="button" onClick={() => switchTo("forgot")} className="text-sm hover:underline" style={{ color: "#FF6400" }}>
+                      Esqueci a senha
+                    </button>
+                  </div>
+                  <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
+                    {loading ? "Carregando..." : "Entrar"}
+                  </Button>
+                  <p className="text-center text-sm" style={{ color: "#6B7280" }}>
+                    Não tem conta?{" "}
+                    <button type="button" onClick={() => switchTo("signup")} className="font-medium hover:underline" style={{ color: "#FF6400" }}>
+                      Criar conta
+                    </button>
+                  </p>
+                </form>
+              </div>
+
+              {/* ── BACK: Signup ── */}
+              <div
+                className="w-full rounded-2xl p-6 shadow-lg absolute top-0 left-0"
+                style={{
+                  backfaceVisibility: "hidden",
+                  transform: "rotateY(180deg)",
+                  background: "#FFFFFF",
+                }}
+              >
+                <form onSubmit={handleSubmit} className="space-y-5 w-full">
+                  <div className="text-center space-y-1 mb-2">
+                    <h2 className="text-2xl font-bold" style={{ color: "#111827" }}>Crie sua conta</h2>
+                    <p className="text-sm" style={{ color: "#6B7280" }}>Comece a controlar suas finanças</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName-mobile" style={{ color: "#111827" }}>Nome</Label>
+                    <Input id="fullName-mobile" type="text" placeholder="Seu nome completo" value={fullName} onChange={(e) => setFullName(e.target.value)} className="rounded-xl bg-secondary border-border" required />
+                  </div>
+                  {emailField("-mobile-signup")}
+                  {passwordField("-mobile-signup")}
+                  <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold" disabled={loading}>
+                    {loading ? "Carregando..." : "Criar Conta"}
+                  </Button>
+                  <p className="text-center text-sm" style={{ color: "#6B7280" }}>
+                    Já tem conta?{" "}
+                    <button type="button" onClick={() => switchTo("login")} className="font-medium hover:underline" style={{ color: "#FF6400" }}>
+                      Entrar
+                    </button>
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
-
   // ─── DESKTOP LAYOUT (>= md) ───
   const desktopLayout = (
     <div className="hidden md:flex min-h-screen items-center justify-center bg-background p-8">
