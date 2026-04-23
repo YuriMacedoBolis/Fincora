@@ -66,12 +66,6 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const handleTourCallback = (data: EventData) => {
-    const { status } = data;
-    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-      setRunTour(false);
-    }
-  };
 
   const firstName = (profile?.full_name || "Usuário").split(" ")[0];
 
