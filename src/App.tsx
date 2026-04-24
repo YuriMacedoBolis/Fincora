@@ -42,8 +42,8 @@ const App = () => (
               <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <CookieBanner />
           </BrowserRouter>
-          <CookieBanner />
         </TooltipProvider>
         </PrivacyProvider>
       </ThemeProvider>
