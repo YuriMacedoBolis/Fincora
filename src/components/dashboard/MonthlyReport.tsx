@@ -131,7 +131,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
 
       const imgH = (canvas.height * pdfW) / canvas.width;
       pdf.addImage(imgData, "PNG", 0, 0, pdfW, imgH);
-      pdf.save("Relatorio-FinCare.pdf");
+      pdf.save("Relatorio-FinCare-Brasil.pdf");
     } catch (e) {
       console.error("PDF export failed", e);
     } finally {
@@ -321,7 +321,7 @@ const MonthlyReport = ({ transactions, open: controlledOpen, onOpenChange }: Mon
 
             {/* Footer watermark for PDF */}
             <p className="text-center text-[10px] pt-2" style={{ color: "#4a5568" }}>
-              Gerado por FinCare • {new Date().toLocaleDateString("pt-BR")}
+              Gerado por FinCare Brasil • {new Date().toLocaleDateString("pt-BR")}
             </p>
           </div>
         </DialogContent>

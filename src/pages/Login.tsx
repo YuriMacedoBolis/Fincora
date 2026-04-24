@@ -18,6 +18,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [panelSide, setPanelSide] = useState<"left" | "right">("left");
   const navigate = useNavigate();
 
@@ -49,6 +50,11 @@ const Login = () => {
     }
 
     if (mode === "signup") {
+      if (!acceptTerms) {
+        toast.error("Você precisa aceitar os Termos de Uso e a Política de Privacidade para continuar.");
+        setLoading(false);
+        return;
+      }
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -102,7 +108,7 @@ const Login = () => {
       <div className="w-full max-w-sm">
         {/* Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold tracking-tight text-[#FF6400]">FinCare</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-[#FF6400]">FinCare Brasil</h1>
           <p className="text-sm mt-1 text-[#1a5c3a]">Gerencie suas finanças com inteligência</p>
         </div>
 
@@ -145,7 +151,7 @@ const Login = () => {
                 <form onSubmit={handleSubmit} className="space-y-5 w-full">
                   <div className="text-center space-y-1 mb-4">
                     <h2 className="text-2xl font-bold text-[#003320]">Bem-vindo de volta!</h2>
-                    <p className="text-sm text-[#1a5c3a]">Entre na sua conta FinCare</p>
+                    <p className="text-sm text-[#1a5c3a]">Entre na sua conta FinCare Brasil</p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email-ml" className="text-[#003320]">E-mail</Label>
@@ -211,6 +217,16 @@ const Login = () => {
                       </button>
                     </div>
                   </div>
+                  <div className="flex items-start space-x-2">
+                    <Checkbox id="terms-mobile" checked={acceptTerms} onCheckedChange={(v) => setAcceptTerms(v === true)} className="mt-0.5" />
+                    <Label htmlFor="terms-mobile" className="text-xs cursor-pointer text-[#1a5c3a] leading-snug">
+                      Li e concordo com os{" "}
+                      <a href="/termos" target="_blank" rel="noopener noreferrer" className="text-[#FF6400] hover:underline font-medium">Termos de Uso</a>
+                      {" "}e{" "}
+                      <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-[#FF6400] hover:underline font-medium">Política de Privacidade</a>
+                      {" "}da FinCare Brasil
+                    </Label>
+                  </div>
                   <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
                     {loading ? "Carregando..." : "Criar Conta"}
                   </Button>
@@ -254,7 +270,7 @@ const Login = () => {
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
       <div className="text-center space-y-1 mb-2">
         <h2 className="text-2xl font-bold text-[#003320]">Bem-vindo de volta!</h2>
-        <p className="text-[#1a5c3a] text-sm">Entre na sua conta FinCare</p>
+        <p className="text-[#1a5c3a] text-sm">Entre na sua conta FinCare Brasil</p>
       </div>
       {emailField()}
       {passwordField()}
@@ -285,6 +301,16 @@ const Login = () => {
       </div>
       {emailField()}
       {passwordField()}
+      <div className="flex items-start space-x-2">
+        <Checkbox id="terms-desktop" checked={acceptTerms} onCheckedChange={(v) => setAcceptTerms(v === true)} className="mt-0.5" />
+        <Label htmlFor="terms-desktop" className="text-xs cursor-pointer text-[#1a5c3a] leading-snug">
+          Li e concordo com os{" "}
+          <a href="/termos" target="_blank" rel="noopener noreferrer" className="text-[#FF6400] hover:underline font-medium">Termos de Uso</a>
+          {" "}e{" "}
+          <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-[#FF6400] hover:underline font-medium">Política de Privacidade</a>
+          {" "}da FinCare Brasil
+        </Label>
+      </div>
       <Button type="submit" className="w-full rounded-xl h-12 text-base font-semibold bg-[#FF6400] hover:bg-[#e55a00] text-white" disabled={loading}>
         {loading ? "Carregando..." : "Criar Conta"}
       </Button>
@@ -343,7 +369,7 @@ const Login = () => {
           style={{ background: "#FF6400" }}
         >
           <div className="flex flex-col items-center justify-center h-full text-white px-12 text-center">
-            <h1 className="text-4xl font-bold mb-4 tracking-tight">FinCare</h1>
+            <h1 className="text-4xl font-bold mb-4 tracking-tight">FinCare Brasil</h1>
             {panelSide === "left" ? (
               <>
                 <p className="text-lg mb-2 font-medium">Novo por aqui?</p>
