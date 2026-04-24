@@ -53,7 +53,7 @@ const ResetPassword = () => {
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="glass w-full max-w-sm rounded-2xl p-8 space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-primary">FinCare</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-primary">FinCare Brasil</h1>
           <p className="text-muted-foreground text-sm">Defina sua nova senha</p>
         </div>
 

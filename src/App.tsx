@@ -14,6 +14,8 @@ import Historico from "./pages/Historico.tsx";
 import Perfil from "./pages/Perfil.tsx";
 import Analise from "./pages/Analise.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
+import Termos from "./pages/Termos.tsx";
+import Privacidade from "./pages/Privacidade.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/termos" element={<Termos />} />
+              <Route path="/privacidade" element={<Privacidade />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
               <Route path="/historico" element={<ProtectedRoute><Historico /></ProtectedRoute>} />
