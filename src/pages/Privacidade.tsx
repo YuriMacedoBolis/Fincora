@@ -121,11 +121,17 @@ const Privacidade = () => {
             </div>
 
             <div>
-              <h2 className="text-xl font-bold mt-6 mb-2">9. Encarregado de Dados (DPO)</h2>
+              <h2 className="text-xl font-bold mt-6 mb-2">9. Contato e Encarregado de Dados (DPO)</h2>
               <p>
-                Para exercer seus direitos ou esclarecer dúvidas sobre o tratamento
-                dos seus dados pessoais, entre em contato com nosso Encarregado de
-                Proteção de Dados pelo canal oficial disponível na plataforma.
+                Para exercer seus direitos previstos na LGPD ou esclarecer dúvidas
+                sobre o tratamento dos seus dados pessoais, entre em contato direto
+                com a nossa equipe pelo e-mail oficial:{" "}
+                <a
+                  href="mailto:fincareti@gmail.com"
+                  className="text-[#FF6400] font-semibold hover:underline"
+                >
+                  fincareti@gmail.com
+                </a>
               </p>
             </div>
           </section>
